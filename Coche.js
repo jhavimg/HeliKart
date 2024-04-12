@@ -7,11 +7,16 @@ class Coche extends THREE.Object3D {
     
     this.createGUI(gui,titleGui);
     
-    this.variacion = 0.05; //como va a aumentar la x a mas chica mas lento sube
-    this.alturaMax = 3;  //la altura maxima a la que llega el coche
-    this.xIni = -3.8729833462074; //esto depende de la funcion que se elija => -0.2x² + alturaMaxima
-    this.x = this.xIni; //es la x de donde va a salir la Y
-    var mat = new THREE.MeshStandardMaterial({ color: 0xFFFF00 });
+    this.variacion = 0.05;              //como va a aumentar la x a mas chica mas lento sube
+    this.alturaMax = 3;                 //la altura maxima a la que llega el coche
+    this.xIni = -3.8729833462074;       //esto depende de la funcion que se elija => -0.2x² + alturaMaxima
+    this.x = this.xIni;                 //es la x de donde va a salir la Y
+
+    var mat = new THREE.MeshStandardMaterial({ 
+      color: 0xFFFF00,
+      metalness: 0.5,      
+      roughness: 0.3, 
+    });
 
     var cuerpo = new THREE.Mesh(new THREE.BoxGeometry(1 , 1 , 1 ) , mat);
 
@@ -84,7 +89,7 @@ class Coche extends THREE.Object3D {
     this.add(resultado);
 
     var motor = this.createEngine();
-    motor.position.set(1.1, 0.53, 0);
+    motor.position.set(1.1, 0.5, 0);
     this.add(motor);
   }
 
@@ -164,7 +169,7 @@ class Coche extends THREE.Object3D {
     llantaD.rotateX(Math.PI / 2);
     eje.add(llantaD);
 
-    var neumaticoGeom = new THREE.CylinderGeometry(0.35 , 0.35 , 0.19)
+    var neumaticoGeom = new THREE.CylinderGeometry(0.35 , 0.35 , 0.19);
     var neumaticoI = new THREE.Mesh(neumaticoGeom , new THREE.MeshStandardMaterial({color: 0x000000}));
     var neumaticoD = new THREE.Mesh(neumaticoGeom , new THREE.MeshStandardMaterial({color: 0x000000}));
     neumaticoI.position.set(0,0.6 + 0.1,0);
@@ -177,7 +182,8 @@ class Coche extends THREE.Object3D {
   createLlanta(){
     var material = new THREE.MeshStandardMaterial({
       color: 0xCFCFCF, // Color base
-      metalness: 0.5, // Nivel de metalicidad
+      metalness: 0.7, // Nivel de metalicidad
+      roughness: 0.2,
     });
 
     var circunferencia = new THREE.TorusGeometry(0.25, 0.05);
