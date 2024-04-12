@@ -7,6 +7,10 @@ class Coche extends THREE.Object3D {
     
     this.createGUI(gui,titleGui);
     
+    this.variacion = 0.05; //como va a aumentar la x a mas chica mas lento sube
+    this.alturaMax = 3;  //la altura maxima a la que llega el coche
+    this.xIni = -3.8729833462074; //esto depende de la funcion que se elija => -0.2x² + alturaMaxima
+    this.x = this.xIni; //es la x de donde va a salir la Y
     var mat = new THREE.MeshStandardMaterial({ color: 0xFFFF00 });
 
     var cuerpo = new THREE.Mesh(new THREE.BoxGeometry(1 , 1 , 1 ) , mat);
@@ -160,62 +164,25 @@ class Coche extends THREE.Object3D {
   createGUI (gui,titleGui) {
     // Controles para el tamaño, la orientación y la posición de la caja
     this.guiControls = {
-      segmentos : 10,
-      angulo : Math.PI * 2,
-      sizeX : 1.0,
-      sizeY : 1.0,
-      sizeZ : 1.0,
-      
-      rotX : 0.0,
-      rotY : 0.0,
-      rotZ : 0.0,
-      
-      posX : 0.0,
-      posY : 0.0,
-      posZ : 0.0,
+      animacion : false,
       
       // Un botón para dejarlo todo en su posición inicial
       // Cuando se pulse se ejecutará esta función.
       reset : () => {
-        this.guiControls.segmentos = 10;
-        this.guiControls.angulo = Math.PI * 2;
-        this.guiControls.sizeX = 1.0;
-        this.guiControls.sizeY = 1.0;
-        this.guiControls.sizeZ = 1.0;
-        
-        this.guiControls.rotX = 0.0;
-        this.guiControls.rotY = 0.0;
-        this.guiControls.rotZ = 0.0;
-        
-        this.guiControls.posX = 0.0;
-        this.guiControls.posY = 0.0;
-        this.guiControls.posZ = 0.0;
+        this.guiControls.animacion = false;
       }
     } 
     
     // Se crea una sección para los controles de la caja
     var folder = gui.addFolder (titleGui);
-    // Estas lineas son las que añaden los componentes de la interfaz
-    // Las tres cifras indican un valor mínimo, un máximo y el incremento
-    // El método   listen()   permite que si se cambia el valor de la variable en código, el deslizador de la interfaz se actualice
-    folder.add (this.guiControls, 'segmentos', 3, 30 , 1).name ('Num Segmentos: ').listen();
-    folder.add (this.guiControls, 'angulo', 0, Math.PI * 2 , 0.056 * Math.PI).name ('Angulo: ').listen();
 
-
-    folder.add (this.guiControls, 'sizeX', 0.1, 5.0, 0.01).name ('Tamaño X : ').listen();
-    folder.add (this.guiControls, 'sizeY', 0.1, 5.0, 0.01).name ('Tamaño Y : ').listen();
-    folder.add (this.guiControls, 'sizeZ', 0.1, 5.0, 0.01).name ('Tamaño Z : ').listen();
-    
-    folder.add (this.guiControls, 'rotX', 0.0, Math.PI/2, 0.01).name ('Rotación X : ').listen();
-    folder.add (this.guiControls, 'rotY', 0.0, Math.PI/2, 0.01).name ('Rotación Y : ').listen();
-    folder.add (this.guiControls, 'rotZ', 0.0, Math.PI/2, 0.01).name ('Rotación Z : ').listen();
-    
-    folder.add (this.guiControls, 'posX', -20.0, 20.0, 0.01).name ('Posición X : ').listen();
-    folder.add (this.guiControls, 'posY', 0.0, 10.0, 0.01).name ('Posición Y : ').listen();
-    folder.add (this.guiControls, 'posZ', -20.0, 20.0, 0.01).name ('Posición Z : ').listen();
+    folder.add (this.guiControls, 'animacion')
+      .name ('Animación : ')
+      .onChange ( (value) => this.doSalto(value) );
     
     folder.add (this.guiControls, 'reset').name ('[ Reset ]');
   }
+
 
   change(numSegments , angu ) {
     this.remove(this.revolution);
@@ -226,37 +193,29 @@ class Coche extends THREE.Object3D {
     this.add(this.revolution); 
   }
 
-  /* changeAngle(angu) {
-    this.remove(this.revolution);
-    const geometry = new THREE.LatheGeometry(this.point, this.num, 0, angu); // Crea una nueva revolución con el número de segmentos especificado
-    const mat = new THREE.MeshNormalMaterial({side: THREE.DoubleSide});
+  doSalto(salto){
+    this.hacerSalto = salto;
+  }
 
-    this.revolution = new THREE.Mesh(geometry, mat);
-    this.add(this.revolution); 
-  } */
+  //funcion que saca la Y de la parabola -0.2x² + alturaMax
+  calcularY(x) {
+    var y = -0.2 * x * x + this.alturaMax;
+    return y;
+  }
+
+  salto(){
+    this.position.set(0 , this.calcularY(this.x) , 0); //establece la altura
+    this.x += this.variacion;
+    if(this.x >= Math.abs(this.xIni)){  //si llega al final de la palabola desactiva la animación
+      this.hacerSalto = false;
+      this.x = this.xIni;
+    }
+  }
   
   update () {
-    // Con independencia de cómo se escriban las 3 siguientes líneas, el orden en el que se aplican las transformaciones es:
-    // Primero, el escalado
-    // Segundo, la rotación en Z
-    // Después, la rotación en Y
-    // Luego, la rotación en X
-    // Y por último la traslación
-    /* if(this.guiControls.segmentos !== this.num || this.guiControls.angulo !== this.angle){
-      //console.log("hola");
-      this.num = this.guiControls.segmentos;
-      this.angle = this.guiControls.angulo;
-      this.change(this.guiControls.segmentos , this.guiControls.angulo);
-    } */
-
-    /* if(this.guiControls.angulo !== this.angle){
-      this.angle = this.guiControls.angulo;
-      this.changeAngle(this.guiControls.angulo);
-    } */
-    
-    this.position.set (this.guiControls.posX,this.guiControls.posY,this.guiControls.posZ);
-    this.rotation.set (this.guiControls.rotX,this.guiControls.rotY,this.guiControls.rotZ);
-    this.scale.set (this.guiControls.sizeX,this.guiControls.sizeY,this.guiControls.sizeZ);
+    if(this.hacerSalto){
+      this.salto();
+    }
   }
 }
 
