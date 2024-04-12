@@ -22,10 +22,47 @@ class Coche extends THREE.Object3D {
     morroGeom_t.translate(0.5 + 0.249 , 0 , 0);
     var morro_t = new THREE.Mesh(morroGeom_t);
 
+    var techo = new CSG();
+
+    var techoGeom = new THREE.CylinderGeometry(0.5 , 0.71 , 0.4 , 4);
+    techoGeom.rotateY(Math.PI/4);
+    techoGeom.translate(0 , 0.5 + 0.2 , 0);
+    var techoMesh = new THREE.Mesh(techoGeom , mat);
+
+    var techo_restaGeom = new THREE.CylinderGeometry(0.5 , 0.71 , 0.4 , 4);
+    techo_restaGeom.scale(0.9 , 0.9 , 0.9);
+    techo_restaGeom.rotateY(Math.PI/4);
+    techo_restaGeom.translate(-0.1 , 0.5 + 0.2 , 0);
+    var techo_resta = new THREE.Mesh(techo_restaGeom , mat);
+
+    var techo_restaGeom1 = new THREE.CylinderGeometry(0.5 , 0.71 , 0.4 , 4);
+    techo_restaGeom1.scale(0.9 , 0.9 , 0.9);
+    techo_restaGeom1.rotateY(Math.PI/4);
+    techo_restaGeom1.translate(0 , 0.5 + 0.2 , -0.1);
+    var techo_resta1 = new THREE.Mesh(techo_restaGeom1 , mat);
+
+    var techo_restaGeom2 = new THREE.CylinderGeometry(0.5 , 0.71 , 0.4 , 4);
+    techo_restaGeom2.scale(0.9 , 0.9 , 0.9);
+    techo_restaGeom2.rotateY(Math.PI/4);
+    techo_restaGeom2.translate(0 , 0.5 + 0.2 , 0.1);
+    var techo_resta2 = new THREE.Mesh(techo_restaGeom2 , mat);
+    techo.subtract([techoMesh , techo_resta , techo_resta1 , techo_resta2]);
+    var techoFinal = techo.toMesh();
+
+    var cristalesGeom = new THREE.CylinderGeometry(0.5 , 0.71 , 0.4 , 4);
+    cristalesGeom.scale(0.99 , 0.99 , 0.99);
+    cristalesGeom.rotateY(Math.PI/4);
+    cristalesGeom.translate(0 ,0.7 , 0);
+    var cristales = new THREE.Mesh(cristalesGeom , new THREE.MeshStandardMaterial({color: 0x0000FF, transparent: true,opacity: 0.5}));
+
     var coche = new CSG();
-    coche.union([cuerpo, morro_t , morro_d]);
+    coche.union([cuerpo, morro_t , morro_d , techoFinal]);
     var coche_mesh = coche.toMesh();
-    coche_mesh.scale.set(1.5 , 0.75 , 1);
+    //coche_mesh.scale.set(1.5 , 0.75 , 1);
+    var resultado = new THREE.Mesh();
+    resultado.add(coche_mesh);
+    resultado.add(cristales);
+    resultado.scale.set(1.5 , 0.75 , 1);
 
     var ruedaD = this.createRuedas();
     ruedaD.position.set(-0.5 - 0.7 , -0.15 , 0);
@@ -33,7 +70,7 @@ class Coche extends THREE.Object3D {
     ruedaT.position.set(0.5 + 0.7 , -0.15 , 0);
     this.add(ruedaD);
     this.add(ruedaT);
-    this.add(coche_mesh);
+    this.add(resultado);
 
     var motor = this.createEngine();
     motor.position.set(1, 0.5, 0);

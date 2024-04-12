@@ -11,6 +11,7 @@ import { Stats } from '../libs/stats.module.js'
 //import { Boost } from './Boost.js'
 //import { Boost } from './PowerUp.js'
 import { Coche } from './Coche.js'
+import { Zepelin } from './Zepelin.js'
 
  
 /// La clase fachada del modelo
@@ -50,7 +51,7 @@ class MyScene extends THREE.Scene {
     // El modelo puede incluir su parte de la interfaz gráfica de usuario. Le pasamos la referencia a 
     // la gui y el texto bajo el que se agruparán los controles de la interfaz que añada el modelo.
     //this.perfil = new MyLine(this.gui, "Controles de la Caja");
-    this.revolucion = new Coche(this.gui, "Controles de la revolucion");
+    this.revolucion = new Zepelin(this.gui, "Controles de la revolucion");
     /* this.add (this.model); */
 
     this.grevolucion = new THREE.Group();
