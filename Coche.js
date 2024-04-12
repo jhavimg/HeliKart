@@ -133,11 +133,9 @@ class Coche extends THREE.Object3D {
     cilindro2.translate(-0.1, 0, 0);
     motor.union([cilindro2Mesh]);
     
-
     var base = new THREE.BoxGeometry(0.72, 0.1, 0.3);
     base.translate(0, -0.2, 0);
     var baseMesh = new THREE.Mesh(base, material);
-    //this.add(baseMesh);
     motor.union([baseMesh]);
 
     var engine = motor.toMesh();
@@ -149,14 +147,17 @@ class Coche extends THREE.Object3D {
       color: 0xCFCFCF, // Color base
       metalness: 0.5, // Nivel de metalicidad
     }); 
-    var eje = new THREE.Mesh(new THREE.CylinderGeometry(0.05 , 0.05 , 1.2) , material);
+    var eje = new THREE.Mesh(new THREE.CylinderGeometry(0.05 , 0.05 , 1.7) , material);
     eje.rotateX(Math.PI /2);
 
-    var llantaI = new THREE.Mesh(new THREE.CylinderGeometry(0.2 , 0.2 , 0.2) , material);
-    llantaI.position.y = 0.6 + 0.1;
+    var llantaI = this.createLlanta();
+    llantaI.position.y = 0.8;
+    llantaI.rotateX(Math.PI / 2);
     eje.add(llantaI);
-    var llantaD = new THREE.Mesh(new THREE.CylinderGeometry(0.2 , 0.2 , 0.2) , material);
-    llantaD.position.y = -0.6 - 0.1;
+
+    var llantaD = this.createLlanta();
+    llantaD.position.y = -0.8;
+    llantaD.rotateX(Math.PI / 2);
     eje.add(llantaD);
 
     var neumaticoGeom = new THREE.CylinderGeometry(0.35 , 0.35 , 0.19)
@@ -167,6 +168,30 @@ class Coche extends THREE.Object3D {
     eje.add(neumaticoI);
     eje.add(neumaticoD);
     return eje;
+  }
+
+  createLlanta(){
+    var material = new THREE.MeshStandardMaterial({
+      color: 0xCFCFCF, // Color base
+      metalness: 0.5, // Nivel de metalicidad
+    });
+
+    var circunferencia = new THREE.TorusGeometry(0.25, 0.05);
+    var circunferenciaMesh = new THREE.Mesh(circunferencia, material);
+
+    var llanta_csg = new CSG();
+    llanta_csg.union([circunferenciaMesh]);
+
+    var radio = new THREE.BoxGeometry(0.005, 0.25, 0.02);
+    radio.translate(0, 0.15, 0);
+    var radioMesh = new THREE.Mesh(radio, material);
+    llanta_csg.union([radioMesh]);
+    for(var i = 0; i < 9; i++){
+      radio.rotateZ(Math.PI / 4);
+      llanta_csg.union([radioMesh]);
+    }
+    var llanta = llanta_csg.toMesh();
+    return llanta;
   }
 
   createGUI (gui,titleGui) {
