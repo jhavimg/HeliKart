@@ -10,6 +10,7 @@ class Coche extends THREE.Object3D {
     var mat = new THREE.MeshStandardMaterial({ color: 0xFFFF00 });
 
     var cuerpo = new THREE.Mesh(new THREE.BoxGeometry(1 , 1 , 1 ) , mat);
+
     var morroGeom_d = new THREE.CylinderGeometry(0.5 , 0.71 , 0.5 , 4);
     morroGeom_d.rotateZ(Math.PI / 2);
     morroGeom_d.rotateX(  Math.PI /4);
@@ -57,6 +58,12 @@ class Coche extends THREE.Object3D {
 
     var coche = new CSG();
     coche.union([cuerpo, morro_t , morro_d , techoFinal]);
+
+    var huecoMotor = new THREE.BoxGeometry(0.45, 0.4, 0.3);
+    huecoMotor.translate(0.75, 0.5, 0);
+    var huecoMotorMesh = new THREE.Mesh(huecoMotor, new THREE.MeshNormalMaterial());
+    coche.subtract([huecoMotorMesh]);
+
     var coche_mesh = coche.toMesh();
     //coche_mesh.scale.set(1.5 , 0.75 , 1);
     var resultado = new THREE.Mesh();
@@ -73,7 +80,7 @@ class Coche extends THREE.Object3D {
     this.add(resultado);
 
     var motor = this.createEngine();
-    motor.position.set(1, 0.5, 0);
+    motor.position.set(1.1, 0.53, 0);
     this.add(motor);
   }
 
@@ -86,19 +93,13 @@ class Coche extends THREE.Object3D {
 
     var materialCil = new THREE.MeshStandardMaterial({ color: 0xAAAAAA });
 
-    // var materialCil = new THREE.MeshBasicMaterial({
-    //   color: 0xaaaaaa, 
-    //   metalness: 0.8,    
-    //   roughness: 0.3 
-    // });
-
-    var cilPrincipal = new THREE.CylinderGeometry(0.1, 0.1, 0.5);
+    var cilPrincipal = new THREE.CylinderGeometry(0.1, 0.1, 0.6);
     cilPrincipal.rotateZ(Math.PI / 2);
-    cilPrincipal.scale(1, 2, 1);
+    cilPrincipal.scale(1, 2, 1.3);
     var cilPrincipalMesh = new THREE.Mesh(cilPrincipal, material);
 
     var cilindro1 = new THREE.CylinderGeometry(0.05, 0.05, 0.4);
-    cilindro1.translate(-0.2, 0, 0.1);
+    cilindro1.translate(-0.25, 0, 0.1);
     cilindro1.rotateX(Math.PI / 5);
     var cilindro1Mesh = new THREE.Mesh(cilindro1, materialCil);
 
@@ -112,9 +113,11 @@ class Coche extends THREE.Object3D {
     motor.union([cilindro1Mesh]);
     cilindro1.translate(0.1, 0, 0);
     motor.union([cilindro1Mesh]);
+    cilindro1.translate(0.1, 0, 0);
+    motor.union([cilindro1Mesh]);
     
     var cilindro2 = new THREE.CylinderGeometry(0.05, 0.05, 0.4);
-    cilindro2.translate(0.2, 0, -0.1);
+    cilindro2.translate(0.25, 0, -0.1);
     cilindro2.rotateX(-Math.PI / 5);
     var cilindro2Mesh = new THREE.Mesh(cilindro2, materialCil);
 
@@ -127,6 +130,15 @@ class Coche extends THREE.Object3D {
     motor.union([cilindro2Mesh]);
     cilindro2.translate(-0.1, 0, 0);
     motor.union([cilindro2Mesh]);
+    cilindro2.translate(-0.1, 0, 0);
+    motor.union([cilindro2Mesh]);
+    
+
+    var base = new THREE.BoxGeometry(0.72, 0.1, 0.3);
+    base.translate(0, -0.2, 0);
+    var baseMesh = new THREE.Mesh(base, material);
+    //this.add(baseMesh);
+    motor.union([baseMesh]);
 
     var engine = motor.toMesh();
     return engine;
