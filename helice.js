@@ -17,7 +17,7 @@ class helice extends THREE.Object3D {
     shape.closePath();
 
     const extrudeSettings = { 
-      depth: 1.5, 
+      depth: 1.3, 
       bevelEnabled: false, 
       bevelThickness: 5,//largo de lo abombao
       bevelSize: 1.5, //cuanto se va a abombarCoche
@@ -30,12 +30,10 @@ class helice extends THREE.Object3D {
     const mat = new THREE.MeshNormalMaterial({side: THREE.DoubleSide});
 
     var elice = new THREE.Mesh(geometry , mat);
-    elice.scale.set(1.7 , 2 , 3);
-    elice.position.y = -0.05;
+    elice.position.y = -0.025;
     
     /* var cilindro = new THREE.Mesh(new THREE.) */
     this.add(elice);
-
   }
   
   createGUI (gui,titleGui) {
@@ -100,7 +98,7 @@ class helice extends THREE.Object3D {
    
     this.position.set (this.guiControls.posX,this.guiControls.posY,this.guiControls.posZ);
     this.rotation.set (this.guiControls.rotX,this.guiControls.rotY,this.guiControls.rotZ);
-    this.scale.set (this.guiControls.sizeX,this.guiControls.sizeY,this.guiControls.sizeZ);
+    //this.scale.set (this.guiControls.sizeX,this.guiControls.sizeY,this.guiControls.sizeZ);
   }
 }
 
