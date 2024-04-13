@@ -7,7 +7,7 @@ class Coche extends THREE.Object3D {
     
     this.createGUI(gui,titleGui);
     
-    this.variacion = 0.05; //como va a aumentar la x a mas chica mas lento sube
+    this.variacion = 0.07; //como va a aumentar la x a mas chica mas lento sube
     this.alturaMax = 3;  //la altura maxima a la que llega el coche
     this.xIni = -3.8729833462074; //esto depende de la funcion que se elija => -0.2x² + alturaMaxima
     this.x = this.xIni; //es la x de donde va a salir la Y
