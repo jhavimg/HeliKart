@@ -7,13 +7,12 @@ class Coche extends THREE.Object3D {
     
     this.createGUI(gui,titleGui);
     
-<<<<<<< HEAD
     this.variacion = 0.07; //como va a aumentar la x a mas chica mas lento sube
     this.alturaMax = 3;  //la altura maxima a la que llega el coche
     this.xIni = -3.8729833462074; //esto depende de la funcion que se elija => -0.2x² + alturaMaxima
     this.x = this.xIni; //es la x de donde va a salir la Y
     var mat = new THREE.MeshStandardMaterial({ color: 0xFFFF00 });
-=======
+
     this.variacion = 0.05;              //como va a aumentar la x a mas chica mas lento sube
     this.alturaMax = 3;                 //la altura maxima a la que llega el coche
     this.xIni = -3.8729833462074;       //esto depende de la funcion que se elija => -0.2x² + alturaMaxima
@@ -24,7 +23,6 @@ class Coche extends THREE.Object3D {
       metalness: 0.5,      
       roughness: 0.3, 
     });
->>>>>>> 765dff6ff6211b0205670d006dc611de96b348ec
 
     var cuerpo = new THREE.Mesh(new THREE.BoxGeometry(1 , 1 , 1 ) , mat);
 
