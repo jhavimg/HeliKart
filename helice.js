@@ -8,7 +8,7 @@ class helice extends THREE.Object3D {
     
     // Se crea la parte de la interfaz que corresponde a la caja
     // Se crea primero porque otros métodos usan las variables que se definen para la interfaz
-    this.createGUI(gui,titleGui);
+    //this.createGUI(gui,titleGui);
 
     var shape = new THREE.Shape();
     shape.moveTo(0 , 0);
@@ -26,14 +26,21 @@ class helice extends THREE.Object3D {
     };
     
     const geometry = new THREE.ExtrudeGeometry( shape, extrudeSettings );
-
-    const mat = new THREE.MeshNormalMaterial({side: THREE.DoubleSide});
+    geometry.translate(0 , -0.025 , 0);
+    geometry.rotateX(-Math.PI / 2);
+    geometry.rotateY(-Math.PI / 2)
+    const mat = new THREE.MeshStandardMaterial({ color: 0x3F3F3F });
 
     var elice = new THREE.Mesh(geometry , mat);
-    elice.position.y = -0.025;
+    elice.position.y = 0.1;
+    elice.scale.set(0.01 , 0.8 , 0.5);
+
+    var brazo = new THREE.Mesh(new THREE.CylinderGeometry(0.02 , 0.025 , 0.1) , mat);
+    brazo.position.y = 0.05;
     
     /* var cilindro = new THREE.Mesh(new THREE.) */
     this.add(elice);
+    this.add(brazo);
   }
   
   createGUI (gui,titleGui) {

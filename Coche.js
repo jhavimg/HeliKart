@@ -1,5 +1,6 @@
 import * as THREE from '../libs/three.module.js'
 import { CSG } from '../libs/CSG-v2.js'
+import { helice } from './helice.js';
  
 class Coche extends THREE.Object3D {
   constructor(gui,titleGui) {
@@ -7,6 +8,7 @@ class Coche extends THREE.Object3D {
     
     this.createGUI(gui,titleGui);
     
+    this.tituloGui = titleGui
     this.variacion = 0.07; //como va a aumentar la x a mas chica mas lento sube
     this.alturaMax = 3;  //la altura maxima a la que llega el coche
     this.xIni = -3.8729833462074; //esto depende de la funcion que se elija => -0.2x² + alturaMaxima
@@ -97,6 +99,11 @@ class Coche extends THREE.Object3D {
     var motor = this.createEngine();
     motor.position.set(1.1, 0.5, 0);
     this.add(motor);
+
+    var brazo = this.createBrazo();
+    brazo.position.set(1.1, 0.7, 0);
+    this.add(brazo);
+    
   }
 
   createEngine(){
@@ -210,10 +217,64 @@ class Coche extends THREE.Object3D {
     return llanta;
   }
 
+  createBrazo(){
+    
+    var brazo = new THREE.Mesh(new THREE.BoxGeometry(0.1 , 0.7 , 0.1) , new THREE.MeshStandardMaterial({ color: 0x000000 }));
+    var brazo_movilGeom = new THREE.CylinderGeometry(0.05 , 0.05 , 0.6);
+    brazo_movilGeom.rotateZ(Math.PI / 2);
+    brazo_movilGeom.translate(0.25, 0, 0);
+    this.brazo_movil = new THREE.Mesh(brazo_movilGeom , new THREE.MeshStandardMaterial({ color: 0x000000 }));
+
+    this.angle = 0;                                 //angulo
+    this.variacion_angleIni = 0.02;                 //variacion del angulo
+    this.brazo_movil.position.set(0, 0.35, 0);
+    this.brazo_movil.rotation.z =this.angle;
+    
+    
+    this.elice = this.createHelice(this.tituloGui);
+    this.elice.position.set(0.575, 0, 0);
+    
+    this.brazo_movil.add(this.elice);
+
+    brazo.add(this.brazo_movil);
+    return brazo;
+
+  }
+
+  createHelice(titulo){
+    var elice1 = new helice(this.gui , this.tituloGui);
+
+    var baseGeom =new THREE.CylinderGeometry(0.05 , 0.05 , 0.05);
+    baseGeom.rotateZ(Math.PI / 2);
+    var base = new THREE.Mesh( baseGeom, new  THREE.MeshStandardMaterial({ color: 0x3F3F3F }));
+
+    var elice1 = new helice(this.gui , this.tituloGui);
+    elice1.position.set(0, 0.05, 0);
+    base.add(elice1);
+
+    var elice2 = new helice(this.gui , this.tituloGui);
+    elice2.rotateX( Math.PI / 2),
+    elice2.position.set(0, 0, 0.05);
+    base.add(elice2);
+
+    var elice3 = new helice(this.gui , this.tituloGui);
+    elice3.rotateX( Math.PI),
+    elice3.position.set(0, -0.05, 0);
+    base.add(elice3);
+
+    var elice4 = new helice(this.gui , this.tituloGui);
+    elice4.rotateX( 3 * Math.PI / 2),
+    elice4.position.set(0, 0, -0.05);
+    base.add(elice4);
+
+    return base;
+  }
+
   createGUI (gui,titleGui) {
     // Controles para el tamaño, la orientación y la posición de la caja
     this.guiControls = {
       animacion : false,
+      animacion2 : false,
       
       // Un botón para dejarlo todo en su posición inicial
       // Cuando se pulse se ejecutará esta función.
@@ -228,22 +289,19 @@ class Coche extends THREE.Object3D {
     folder.add (this.guiControls, 'animacion')
       .name ('Animación : ')
       .onChange ( (value) => this.doSalto(value) );
+    folder.add (this.guiControls, 'animacion2')
+      .name ('Animación2 : ')
+      .onChange ( (value) => this.subirBrazo(value) );
     
     folder.add (this.guiControls, 'reset').name ('[ Reset ]');
   }
 
-
-  change(numSegments , angu ) {
-    this.remove(this.revolution);
-    const geometry = new THREE.LatheGeometry(this.point, numSegments, 0, angu); // Crea una nueva revolución con el número de segmentos especificado
-    const mat = new THREE.MeshNormalMaterial({side: THREE.DoubleSide});
-
-    this.revolution = new THREE.Mesh(geometry, mat);
-    this.add(this.revolution); 
-  }
-
   doSalto(salto){
     this.hacerSalto = salto;
+  }
+
+  subirBrazo(subir){
+    this.subir = subir;
   }
 
   //funcion que saca la Y de la parabola -0.2x² + alturaMax
@@ -260,11 +318,29 @@ class Coche extends THREE.Object3D {
       this.x = this.xIni;
     }
   }
+
+  volar(){
+    //console.log(this.angle);
+
+    if(this.angle <= 0){
+      this.variacion_angle = this.variacion_angleIni;
+    }else if(this.angle >= Math.PI /2){
+      this.variacion_angle -= this.variacion_angleIni;
+    }
+
+    this.angle += this.variacion_angle;
+    console.log(this.angle);
+    this.brazo_movil.rotation.z = this.angle;
+  }
   
   update () {
     if(this.hacerSalto){
       this.salto();
     }
+    if(this.subir){
+      this.volar();
+    }
+    this.elice.rotateX(Math.PI / 40);
   }
 }
 
