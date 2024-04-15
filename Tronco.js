@@ -7,7 +7,15 @@ class Tronco extends THREE.Object3D {
   constructor(gui,titleGui) {
     super();
 
-    var material = new THREE.MeshNormalMaterial;
+    var loader = new THREE.TextureLoader();
+    var textura = loader.load('./img/tronco.png')
+    textura.wrapS = THREE.RepeatWrapping;
+    textura.wrapT = THREE.RepeatWrapping;
+    textura.repeat.set( 4, 4 );
+        
+    var material = new THREE.MeshStandardMaterial({
+      map: textura,
+    });
 
     var shape = new THREE.Shape();
 
@@ -24,7 +32,7 @@ class Tronco extends THREE.Object3D {
     cuerpo.translate(1.5, 0, 0);
     var cuerpoMesh = new THREE.Mesh(cuerpo, material);
 
-    var pincho = new THREE.CylinderGeometry(0.001, 0.05, 0.15);
+    var pincho = new THREE.CylinderGeometry(0.001, 0.05, 0.15, 64);
     pincho.translate(0, 0.3, 0);
     var pinchoMesh = new THREE.Mesh(pincho, material);
     
