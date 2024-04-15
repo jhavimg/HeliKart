@@ -1,13 +1,14 @@
 import * as THREE from '../libs/three.module.js'
 import {CSG} from '../libs/CSG-v2.js';
 
+const PUNTOS = -3;
+
 class Valla extends THREE.Object3D {
   constructor(gui,titleGui) {
     super();
 
-    var material = new THREE.MeshStandardMaterial({
-      color: 0xE4FF00,
-    });
+    var texture = new THREE.TextureLoader().load('./img/wood.jpg');
+    var material = new THREE.MeshStandardMaterial ({map: texture});
     
     var base = new THREE.CylinderGeometry(0.05, 0.5, 0.3);
     base.translate(0, 0.15, 0);

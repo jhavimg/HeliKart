@@ -57,12 +57,14 @@ class Zepelin extends THREE.Object3D {
     
     const geometry = new THREE.ExtrudeGeometry( shape, extrudeSettings );
 
-    const mat = new THREE.MeshNormalMaterial({side: THREE.DoubleSide});
+    var mat = new THREE.MeshStandardMaterial({
+      color: 0x0009FF,
+    });
 
     this.corazon = new THREE.Mesh(geometry , mat);
     this.corazon.position.y = 1.7;
 
-    var cabina_cuerpo = new THREE.Mesh(new THREE.BoxGeometry(0.7 , 0.3 , 1.5) , new THREE.MeshNormalMaterial());
+    var cabina_cuerpo = new THREE.Mesh(new THREE.BoxGeometry(0.7 , 0.3 , 1.5) , new THREE.MeshStandardMaterial({color: 0xCFCFFF,}));
     var cabina_delantera = new THREE.Mesh(new THREE.CylinderGeometry(0.7 / 2 , 0.7 / 2 , 0.3) , new THREE.MeshNormalMaterial());
     var cabina_trasera = new THREE.Mesh(new THREE.CylinderGeometry(0.7 / 2 , 0.7 / 2 , 0.3) , new THREE.MeshNormalMaterial());
     cabina_cuerpo.position.set(0 , 0 , 0 );
@@ -75,7 +77,7 @@ class Zepelin extends THREE.Object3D {
     cabina.position.y = -0.1
     this.add(this.corazon);
     this.add(cabina);
-
+    this.scale.set(0.1 , 0.1 , 0.1);
   }
   
   createGUI (gui,titleGui) {
@@ -140,7 +142,7 @@ class Zepelin extends THREE.Object3D {
    
     this.position.set (this.guiControls.posX,this.guiControls.posY,this.guiControls.posZ);
     this.rotation.set (this.guiControls.rotX,this.guiControls.rotY,this.guiControls.rotZ);
-    this.scale.set (this.guiControls.sizeX,this.guiControls.sizeY,this.guiControls.sizeZ);
+    //this.scale.set (this.guiControls.sizeX,this.guiControls.sizeY,this.guiControls.sizeZ);
   }
 }
 
