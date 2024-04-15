@@ -38,13 +38,6 @@ class Zepelin extends THREE.Object3D {
     for (var i = 1; i < puntos.length; i++) {
         shape.lineTo(puntos[i].x, puntos[i].y);
     }
-    
-    /* const v1 = new THREE.Vector3(1 , 0 , 1);
-    const v2 = new THREE.Vector3(0 , 1 , 0);
-    const curve = new THREE.LineCurve3(v1 , v2); //curve
-
-    const extrudePath = new THREE.CurvePath();
-    extrudePath.add(curve); */
 
     const extrudeSettings = { 
       depth: 0, 
@@ -61,8 +54,8 @@ class Zepelin extends THREE.Object3D {
       color: 0x0009FF,
     });
 
-    this.corazon = new THREE.Mesh(geometry , mat);
-    this.corazon.position.y = 1.7;
+    var globo = new THREE.Mesh(geometry , mat);
+    globo.position.y = 1.7;
 
     var cabina_cuerpo = new THREE.Mesh(new THREE.BoxGeometry(0.7 , 0.3 , 1.5) , new THREE.MeshStandardMaterial({color: 0xCFCFFF,}));
     var cabina_delantera = new THREE.Mesh(new THREE.CylinderGeometry(0.7 / 2 , 0.7 / 2 , 0.3) , new THREE.MeshNormalMaterial());
@@ -75,9 +68,51 @@ class Zepelin extends THREE.Object3D {
     Figura_cabina.union([cabina_cuerpo , cabina_delantera , cabina_trasera]);
     var cabina = Figura_cabina.toMesh();
     cabina.position.y = -0.1
-    this.add(this.corazon);
+    this.add(globo);
+    //this.add(cabina);
+    
+    var flap1 = this.createFlaps();
+    flap1.position.set(0 , 1.3 , -4);
+    globo.add(flap1);
+
+    var flap2 = this.createFlaps();
+    flap2.position.set(1.3 , 0 , -4);
+    flap2.rotateX(-Math.PI/2);
+    globo.add(flap2);
+
+    var flap3 = this.createFlaps();
+    flap3.position.set(-1.3 , 0 , -4);
+    flap3.rotateX(Math.PI/2)
+    globo.add(flap3);
+
+    this.add(globo);
     this.add(cabina);
     this.scale.set(0.1 , 0.1 , 0.1);
+  }
+
+  createFlaps(){
+    var shape = new THREE.Shape();
+    shape.moveTo(0,0);
+    shape.lineTo(0 , 1); shape.lineTo(0.7 , 1); shape.lineTo(2 , 0); shape.closePath();
+    
+    const extrudeSettings = { 
+      depth: 0, 
+      bevelEnabled: true, 
+      bevelThickness: 0.05,//largo de lo abombao
+      bevelSize: 0.1, //cuanto se va a abombar
+      bevelSegments: 60, //esto crea mas segmentos por lo q se ve mas redondeado
+      curveSegments: 60 //segmentos para la curva del shape
+    };
+
+    const geometry = new THREE.ExtrudeGeometry( shape, extrudeSettings );
+
+    var mat = new THREE.MeshStandardMaterial({
+      color: 0x0009FF,
+    });
+
+    var flap = new THREE.Mesh(geometry , mat);
+    flap.rotateY(-Math.PI/2);
+    return flap;
   }
   
   createGUI (gui,titleGui) {
@@ -140,8 +175,8 @@ class Zepelin extends THREE.Object3D {
     // Luego, la rotación en X
     // Y por último la traslación
    
-    this.position.set (this.guiControls.posX,this.guiControls.posY,this.guiControls.posZ);
-    this.rotation.set (this.guiControls.rotX,this.guiControls.rotY,this.guiControls.rotZ);
+    //this.position.set (this.guiControls.posX,this.guiControls.posY,this.guiControls.posZ);
+    //this.rotation.set (this.guiControls.rotX,this.guiControls.rotY,this.guiControls.rotZ);
     //this.scale.set (this.guiControls.sizeX,this.guiControls.sizeY,this.guiControls.sizeZ);
   }
 }
