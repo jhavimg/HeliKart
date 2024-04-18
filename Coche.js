@@ -20,13 +20,32 @@ class Coche extends THREE.Object3D {
     this.xIni = -3.8729833462074;       //esto depende de la funcion que se elija => -0.2x² + alturaMaxima
     this.x = this.xIni;                 //es la x de donde va a salir la Y
 
+    var texture = new THREE.TextureLoader().load('./img/descarga.jpeg');
     var mat = new THREE.MeshStandardMaterial({ 
       color: 0xFFFF00,
       metalness: 0.5,      
       roughness: 0.3, 
+      map: texture,
     });
 
-    var cuerpo = new THREE.Mesh(new THREE.BoxGeometry(1 , 1 , 1 ) , mat);
+    var cuerpoGeom = new THREE.BoxGeometry(1 , 1 , 1 );
+
+    if (!cuerpoGeom.faceVertexUvs || !cuerpoGeom.faceVertexUvs[0]) {
+      cuerpoGeom.faceVertexUvs = [[]]; // Inicializamos geometry.faceVertexUvs como un array vacío que contiene un array vacío
+    }
+    
+    cuerpoGeom.faceVertexUvs[0][0] = [
+      new THREE.Vector2(0, 0),
+      new THREE.Vector2(1, 0),
+      new THREE.Vector2(1, 1)
+    ];
+    
+    cuerpoGeom.faceVertexUvs[0][5] = [
+      new THREE.Vector2(0, 0),
+      new THREE.Vector2(1, 1),
+      new THREE.Vector2(0, 1)
+    ];
+    var cuerpo = new THREE.Mesh( cuerpoGeom, mat);
 
     var morroGeom_d = new THREE.CylinderGeometry(0.5 , 0.71 , 0.5 , 4);
     morroGeom_d.rotateZ(Math.PI / 2);

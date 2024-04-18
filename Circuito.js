@@ -1,3 +1,7 @@
+/**
+ * Codigo de CinquefoilKnot https://github.com/mrdoob/three.js/blob/master/examples/jsm/curves/CurveExtras.js
+ */
+
 import * as THREE from 'three';
 
 class CinquefoilKnot extends THREE.Curve {
