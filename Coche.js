@@ -8,6 +8,8 @@ class Coche extends THREE.Object3D {
     
     this.createGUI(gui,titleGui);
     
+    this.reloj = new THREE. Clock ( ) ;
+    this.velocidadElice = Math.PI ;
     this.tituloGui = titleGui
     this.variacion = 0.07; //como va a aumentar la x a mas chica mas lento sube
     this.alturaMax = 3;  //la altura maxima a la que llega el coche
@@ -447,10 +449,17 @@ class Coche extends THREE.Object3D {
     if(this.subir){
       this.volar();
     }
-    this.elice.rotateX(Math.PI / 40);
+    
     if(this.abrir){
       this.hacerDisparo();
     }
+
+    
+    this.velocidad = Math.PI / 40;
+
+    var segundosTranscurridos = this.reloj.getDelta ( ); 
+    var esp_ang = this.velocidadElice * segundosTranscurridos ;
+    this.elice.rotateX(esp_ang);
   }
 }
 
