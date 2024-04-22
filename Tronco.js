@@ -8,7 +8,7 @@ class Tronco extends THREE.Object3D {
     super();
 
     var loader = new THREE.TextureLoader();
-    var textura = loader.load('./img/tronco.png')
+    var textura = loader.load('./img/tronco.png');
     textura.wrapS = THREE.RepeatWrapping;
     textura.wrapT = THREE.RepeatWrapping;
     textura.repeat.set( 4, 4 );

@@ -1,7 +1,7 @@
 import * as THREE from '../libs/three.module.js'
 import { CSG } from '../libs/CSG-v2.js'
  
-class Boost extends THREE.Object3D {
+class PowerUp extends THREE.Object3D {
   constructor(gui,titleGui) {
     super();
     
@@ -14,7 +14,7 @@ class Boost extends THREE.Object3D {
 
     var rombo_up = new THREE.Mesh(geometry , mat);
     var rombo_down = new THREE.Mesh(geometry , mat);
-    var anillo = new THREE.Mesh (new THREE.TorusGeometry(0.42 , 0.075 , 16 , 50) , mat );
+    var anillo = new THREE.Mesh (new THREE.TorusGeometry(0.42 , 0.08 , 16 , 50) , mat );
     var esfera_resta = new THREE.Mesh(new THREE.CylinderGeometry(0.25 , 0.25 , 1.5));
     var esfera = new THREE.Mesh(new THREE.SphereGeometry(0.2) , mat)
     esfera_resta.rotateX(-Math.PI/2 );
@@ -137,4 +137,4 @@ class Boost extends THREE.Object3D {
   }
 }
 
-export { Boost };
+export { PowerUp };
