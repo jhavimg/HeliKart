@@ -1,6 +1,4 @@
-/**
- * Codigo de CinquefoilKnot https://github.com/mrdoob/three.js/blob/master/examples/jsm/curves/CurveExtras.js
- */
+
 
 import * as THREE from 'three';
 
@@ -33,9 +31,9 @@ class Circuito extends THREE.Object3D {
 
         this.createGUI(gui, titleGui);
 
-        const curve = new CinquefoilKnot(8);
+        const curve = new CinquefoilKnot(4);
 
-        const radius = 2;
+        const radius = 1;
 
         const segments = 200;
 
