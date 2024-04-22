@@ -20,31 +20,13 @@ class Coche extends THREE.Object3D {
     this.xIni = -3.8729833462074;       //esto depende de la funcion que se elija => -0.2x² + alturaMaxima
     this.x = this.xIni;                 //es la x de donde va a salir la Y
 
-    var texture = new THREE.TextureLoader().load('./img/descarga.jpeg');
     var mat = new THREE.MeshStandardMaterial({ 
       color: 0xFFFF00,
       metalness: 0.5,      
       roughness: 0.3, 
-      map: texture,
     });
 
     var cuerpoGeom = new THREE.BoxGeometry(1 , 1 , 1 );
-
-    if (!cuerpoGeom.faceVertexUvs || !cuerpoGeom.faceVertexUvs[0]) {
-      cuerpoGeom.faceVertexUvs = [[]]; // Inicializamos geometry.faceVertexUvs como un array vacío que contiene un array vacío
-    }
-    
-    cuerpoGeom.faceVertexUvs[0][0] = [
-      new THREE.Vector2(0, 0),
-      new THREE.Vector2(1, 0),
-      new THREE.Vector2(1, 1)
-    ];
-    
-    cuerpoGeom.faceVertexUvs[0][5] = [
-      new THREE.Vector2(0, 0),
-      new THREE.Vector2(1, 1),
-      new THREE.Vector2(0, 1)
-    ];
     var cuerpo = new THREE.Mesh( cuerpoGeom, mat);
 
     var morroGeom_d = new THREE.CylinderGeometry(0.5 , 0.71 , 0.5 , 4);
@@ -122,7 +104,16 @@ class Coche extends THREE.Object3D {
     var brazo = this.createBrazo();
     brazo.position.set(1.1, 0.7, 0);
     this.add(brazo);
-    
+
+    this.angleC = 0;
+    this.variacion_angleCIni = -0.08;
+    this.calandra = this.createCalandra();
+    this.calandra.scale.set(1, 0.65, 0.65);
+    this.calandra.rotateZ(this.angleC);
+    this.calandra.position.set(-1.5, 0.26, 0);
+
+    this.add(this.calandra);
+    this.rotateY(Math.PI /2);
   }
 
   createEngine(){
@@ -289,11 +280,86 @@ class Coche extends THREE.Object3D {
     return base;
   }
 
+  createCalandra(){
+    var shape = new THREE.Shape( );
+    shape.moveTo(-0.4 , 0.4);
+    //shape.lineTo(-0.4 , 0.4);
+    shape.lineTo(0.4 , 0.4);
+    shape.lineTo(0.5 , -0.4);
+    shape.lineTo(-0.5 , -0.4);
+    shape.lineTo(-0.4 , 0.4);
+    shape.closePath();
+
+    var hole = new THREE.Shape( );
+    hole.moveTo(-0.3 , 0.3);
+    hole.lineTo(-0.25,0.3);
+    hole.lineTo(-0.25,-0.3);
+    hole.lineTo(-0.3,-0.3);
+    hole.closePath();
+    shape.holes.push(hole);
+
+    var hole2 = new THREE.Shape();
+    hole2.moveTo(-0.19, 0.3);
+    hole2.lineTo(-0.14, 0.3);
+    hole2.lineTo(-0.14, -0.3);
+    hole2.lineTo(-0.19, -0.3);
+    hole2.closePath();
+    shape.holes.push(hole2);
+
+    // Forma 3
+    var hole3 = new THREE.Shape();
+    hole3.moveTo(-0.08, 0.3);
+    hole3.lineTo(-0.03, 0.3);
+    hole3.lineTo(-0.03, -0.3);
+    hole3.lineTo(-0.08, -0.3);
+    hole3.closePath();
+    shape.holes.push(hole3);
+
+    // Forma 4
+    var hole4 = new THREE.Shape();
+    hole4.moveTo(0.03, 0.3);
+    hole4.lineTo(0.08, 0.3);
+    hole4.lineTo(0.08, -0.3);
+    hole4.lineTo(0.03, -0.3);
+    hole4.closePath();
+    shape.holes.push(hole4);
+
+    // Forma 5
+    var hole5 = new THREE.Shape();
+    hole5.moveTo(0.14, 0.3);
+    hole5.lineTo(0.19, 0.3);
+    hole5.lineTo(0.19, -0.3);
+    hole5.lineTo(0.14, -0.3);
+    hole5.closePath();
+    shape.holes.push(hole5);
+
+    var hole6 = new THREE.Shape();
+    hole6.moveTo(0.25, 0.3);
+    hole6.lineTo(0.3, 0.3);
+    hole6.lineTo(0.3, -0.3);
+    hole6.lineTo(0.25, -0.3);
+    hole6.closePath();
+    shape.holes.push(hole6);
+    
+    var material = new THREE.MeshStandardMaterial({
+      color: 0xAAAAAA,  
+      metalness: 0.8,      
+      roughness: 0.2 
+    });
+    var options1 = { depth : 0.025 , steps : 1 , bevelEnabled : false } ;
+    var geometry1 = new THREE. ExtrudeGeometry ( shape , options1 ) ;
+    geometry1.translate(0 , -0.4 , 0);
+    geometry1.rotateY(-Math.PI / 2);
+    var cuerpo = new THREE.Mesh(geometry1, material);
+    return cuerpo;
+  }
+
   createGUI (gui,titleGui) {
     // Controles para el tamaño, la orientación y la posición de la caja
     this.guiControls = {
       animacion : false,
       animacion2 : false,
+      animacion3 : false,
       
       // Un botón para dejarlo todo en su posición inicial
       // Cuando se pulse se ejecutará esta función.
@@ -311,7 +377,10 @@ class Coche extends THREE.Object3D {
     folder.add (this.guiControls, 'animacion2')
       .name ('Animación2 : ')
       .onChange ( (value) => this.subirBrazo(value) );
-    
+    folder.add (this.guiControls, 'animacion3')
+      .name ('Animación3 : ')
+      .onChange ( (value) => this.disparar(value) );
+
     folder.add (this.guiControls, 'reset').name ('[ Reset ]');
   }
 
@@ -323,6 +392,9 @@ class Coche extends THREE.Object3D {
     this.subir = subir;
   }
 
+  disparar(disparo){
+    this.abrir = disparo;
+  }
   //funcion que saca la Y de la parabola -0.2x² + alturaMax
   calcularY(x) {
     var y = -0.2 * x * x + this.alturaMax;
@@ -348,8 +420,24 @@ class Coche extends THREE.Object3D {
     }
 
     this.angle += this.variacion_angle;
-    console.log(this.angle);
+    //console.log(this.angle);
     this.brazo_movil.rotation.z = this.angle;
+  }
+
+  hacerDisparo(){
+    if(this.angleC >= 0){
+      this.variacion_angleC = this.variacion_angleCIni;
+    }else if(this.angleC <= -Math.PI /1.1){
+      this.variacion_angleC = -this.variacion_angleCIni;
+    }
+
+    this.angleC += this.variacion_angleC;
+    console.log(this.variacion_angleC);
+    this.calandra.rotation.z = this.angleC;
+
+    if(this.angleC >= 0){
+      this.abrir = false;
+    }
   }
   
   update () {
@@ -360,6 +448,9 @@ class Coche extends THREE.Object3D {
       this.volar();
     }
     this.elice.rotateX(Math.PI / 40);
+    if(this.abrir){
+      this.hacerDisparo();
+    }
   }
 }
 
