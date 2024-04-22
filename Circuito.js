@@ -31,18 +31,19 @@ class Circuito extends THREE.Object3D {
 
         this.createGUI(gui, titleGui);
 
-        const curve = new CinquefoilKnot(4);
+        const curve = new CinquefoilKnot(10);
 
-        const radius = 1;
+        const radius = 4;
 
         const segments = 200;
 
-        const tubeGeometry = new THREE.TubeGeometry(curve, segments, radius, segments, true);
+        this.tubeGeometry = new THREE.TubeGeometry(curve, segments, radius, segments, true);
 
         const material = new THREE.MeshLambertMaterial({ color: 0xff00ff });
 
-        const tubeMesh = new THREE.Mesh(tubeGeometry, material);
+        const tubeMesh = new THREE.Mesh(this.tubeGeometry, material);
 
+        this.curve = curve;
         this.add(tubeMesh);
 
     }
@@ -52,6 +53,7 @@ class Circuito extends THREE.Object3D {
     }
 
     update() {
+        
     }
 }
 
