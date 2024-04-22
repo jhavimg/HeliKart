@@ -25,25 +25,8 @@ class MyScene extends THREE.Scene {
     this.createLights ();
     this.createCamera ();
     
-    this.axis = new THREE.AxesHelper (1.5);
-    this.axis1 = new THREE.AxesHelper (1.5);
-    /* this.add (this.axis); */
-    
-    
-    // Por último creamos el modelo.
-    // El modelo puede incluir su parte de la interfaz gráfica de usuario. Le pasamos la referencia a 
-    // la gui y el texto bajo el que se agruparán los controles de la interfaz que añada el modelo.
-    //this.perfil = new MyLine(this.gui, "Controles de la Caja");
-    this.revolucion = new Tronco(this.gui, "Controles de la revolucion");
-    /* this.add (this.model); */
-
-    this.grevolucion = new THREE.Group();
-    this.grevolucion.add(this.axis);
-    this.grevolucion.add(this.revolucion);
-    //this.grevolucion.position.x = 1
-
-    //this.add(this.gperfil);
-    this.add(this.grevolucion);
+    this.circuito = new Circuito(this.gui, "Controles de la revolucion");
+    this.add(this.circuito);
   }
   
   initStats() {
