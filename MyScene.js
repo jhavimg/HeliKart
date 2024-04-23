@@ -17,6 +17,7 @@ import { Valla } from './Valla.js'
 import { Circuito } from './Circuito.js'
 import { Tronco } from './Tronco.js'
 import { Cubo } from './Cubo.js'
+import { Coche2 } from './Coche2.js'
 
 class MyScene extends THREE.Scene {
   constructor (myCanvas) {
@@ -26,43 +27,13 @@ class MyScene extends THREE.Scene {
     this.initStats();
     this.createLights ();
     this.createCamera ();
-    
-    this.circuito = new Circuito(this.gui, "");
-    this.add(this.circuito);
 
-    this.coche = new Cubo(this.circuito.tubeGeometry, this.gui, "Controles coche");
+    this.coche = new Coche2(this.gui, "Controles coche");
     this.add(this.coche);
 
     this.clock = new THREE.Clock();
     this.t = 0;
   }
-
-  // updateCarPosition(){
-  //   this.segmentos = 100;
-  //   this.binormales = this.circuito.curve.computeFrenetFrames (this.segmentos, true).binormals;
-
-  //   var origen = {t: 0};
-  //   var fin = {t: 1};
-  //   var tiempoDeRecorrido = 40000;
-
-  //   var animacion = new TWEEN.Tween (origen).to (fin, tiempoDeRecorrido)
-  //     .onUpdate (() => {
-  //       var posicion = this.circuito.curve.getPointAt (origen.t);
-  //       var tangente = this.circuito.curve.getTangentAt (origen.t);
-  //       var binormales = this.binormales[Math.floor(origen.t * this.segmentos)];
-
-  //       var offset = binormales.clone().multiplyScalar(0.5);
-  //       posicion.add(offset);
-
-  //       this.coche.position.copy (posicion);
-
-  //       var normal = this.circuito.curve.getNormal(origen.t);
-  //       this.coche.up.copy(binormales);
-  //       this.coche.lookAt(posicion.clone().add(tangente));
-  //     })
-  //     .repeat(Infinity)
-  //     .start();
-  // }
   
   initStats() {
   
@@ -84,7 +55,6 @@ class MyScene extends THREE.Scene {
 
     
     this.camera.position.set (0, 2, 10);
-    // Y hacia dónde mira
     var look = new THREE.Vector3 (0,0,0);
     this.camera.lookAt(look);
     this.add (this.camera);
@@ -185,34 +155,12 @@ class MyScene extends THREE.Scene {
     this.renderer.setSize (window.innerWidth, window.innerHeight);
   }
 
-  initKeyHandlers() {
-    this.movingForward = false;
-
-    window.addEventListener('keydown', (event) => {
-      if (event.key === 'w' || event.key === 'W') {
-        this.movingForward = true;
-      }
-    });
-
-    window.addEventListener('keyup', (event) => {
-      if (event.key === 'w' || event.key === 'W') {
-        this.movingForward = false;
-      }
-    });
-  }
-
   update () {
     
     if (this.stats) this.stats.update();
     this.cameraControl.update();
 
-    this.circuito.update();
     this.coche.update();
-    // TWEEN.update();
-    
-    // if (this.movingForward) {
-    //   this.coche.mesh.position.z -= 0.1;
-    // }
 
     this.renderer.render (this, this.getCamera());
     requestAnimationFrame(() => this.update())
