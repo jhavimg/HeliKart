@@ -74,6 +74,10 @@ class Coche2 extends THREE.Object3D {
     this.nodoRaizCoche.add(ruedaT);
     this.nodoRaizCoche.add(brazo);
     this.nodoRaizCoche.add(this.calandra);
+
+    this.nodoRaizCoche.rotateY(Math.PI / 2);
+    this.nodoRaizCoche.scale.set(0.5, 0.5, 0.5);
+
     this.add(this.nodoRaizCoche);
 
     // Posicionamiento de coche en tubo

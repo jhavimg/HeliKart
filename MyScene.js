@@ -28,7 +28,10 @@ class MyScene extends THREE.Scene {
     this.createLights ();
     this.createCamera ();
 
-    this.coche = new Coche2(this.gui, "Controles coche");
+    this.circuito = new Circuito(this.gui, "Controles circuito");
+    this.add(this.circuito);
+
+    this.coche = new Coche2(this.circuito.tubeGeometry, this.gui, "Controles coche");
     this.add(this.coche);
 
     this.clock = new THREE.Clock();
