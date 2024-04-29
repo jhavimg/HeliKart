@@ -14,7 +14,7 @@ class Coche extends THREE.Object3D {
     //velocidad de movimiento de las animaciones///////////
     this.velocidadSalto = 1.5 ;
     this.velocidadBrazo = 1;
-    this.velocidadCalandra = -20;
+    this.velocidadCalandra = -10;
     this.tiempoEspera = 0;
     this.tiempoEsperaMaximo = 2;
     //////////////////////////////////////////////////////
@@ -433,6 +433,8 @@ class Coche extends THREE.Object3D {
   doSalto(salto){
     this.relojSalto = new THREE.Clock();
     this.hacerSalto = salto;
+    this.relojBrazo = new THREE.Clock();
+    this.subir = salto;
   }
 
   subirBrazo(subir){
