@@ -16,7 +16,6 @@ import { Zepelin } from './Zepelin.js'
 import { Valla } from './Valla.js'
 import { Circuito } from './Circuito.js'
 import { Tronco } from './Tronco.js'
-import { Cubo } from './Cubo.js'
 import { Coche2 } from './Coche2.js'
 
 class MyScene extends THREE.Scene {
@@ -28,14 +27,18 @@ class MyScene extends THREE.Scene {
     this.createLights ();
     this.createCamera ();
 
+    // Default to normal camera
+    this.currentCamera = 'normal';
+
     this.circuito = new Circuito(this.gui, "Controles circuito");
     this.add(this.circuito);
 
     this.coche = new Coche2(this.circuito.tubeGeometry, this.gui, "Controles coche");
-    this.add(this.coche);
 
-    this.clock = new THREE.Clock();
-    this.t = 0;
+    // Camara subjetiva
+    this.createCameraSubjetiva(this.coche);
+
+    this.add(this.coche);
   }
   
   initStats() {
@@ -54,10 +57,10 @@ class MyScene extends THREE.Scene {
   }
   
   createCamera () {
-    this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 50);
+    // Cámara normal
+    this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 200);
 
-    
-    this.camera.position.set (0, 2, 10);
+    this.camera.position.set (0, 2, 75);
     var look = new THREE.Vector3 (0,0,0);
     this.camera.lookAt(look);
     this.add (this.camera);
@@ -66,7 +69,23 @@ class MyScene extends THREE.Scene {
     this.cameraControl.rotateSpeed = 5;
     this.cameraControl.zoomSpeed = -2;
     this.cameraControl.panSpeed = 0.5;
-    this.cameraControl.target = look;
+    this.cameraControl.target = look; 
+  }
+
+  createCameraSubjetiva(coche){
+    // Camara subjetiva
+    var camaraSubjetiva = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 50);
+    coche.setCamaraSubjetiva(camaraSubjetiva);
+
+    camaraSubjetiva.position.set (15, 6, 0);
+
+    var puntoDeMiraRelativo = new THREE.Vector3 (0, -10, 30);
+
+    this.target = new THREE.Vector3();
+    camaraSubjetiva.getWorldPosition (this.target);
+    this.target.add (puntoDeMiraRelativo);
+
+    camaraSubjetiva.lookAt (this.target);
   }
   
   createGround () {
@@ -142,9 +161,17 @@ class MyScene extends THREE.Scene {
     
     return renderer;  
   }
+
+  toggleCamera() {
+    this.currentCamera = this.currentCamera === 'normal' ? 'subjetiva' : 'normal';
+  }
   
-  getCamera () {
-    return this.camera;
+  getCamera() {
+    if (this.currentCamera === 'subjetiva') {
+      return this.coche.getCamaraSubjetiva();
+    } else {
+      return this.camera;
+    }
   }
   
   setCameraAspect (ratio) {
@@ -175,6 +202,12 @@ $(function () {
   var scene = new MyScene("#WebGL-output");
 
   window.addEventListener ("resize", () => scene.onWindowResize());
+
+  window.addEventListener("keydown", (event) => {
+    if (event.key === " ") {
+      scene.toggleCamera();
+    }
+  });
   
   scene.update();
 });

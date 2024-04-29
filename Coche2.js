@@ -76,7 +76,7 @@ class Coche2 extends THREE.Object3D {
     this.nodoRaizCoche.add(this.calandra);
 
     this.nodoRaizCoche.rotateY(Math.PI / 2);
-    this.nodoRaizCoche.scale.set(0.5, 0.5, 0.5);
+    this.nodoRaizCoche.scale.set(0.25, 0.25, 0.25);
 
     this.add(this.nodoRaizCoche);
 
@@ -90,6 +90,15 @@ class Coche2 extends THREE.Object3D {
     this.nodoPosOrientTubo = new THREE.Object3D();
     this.add(this.nodoPosOrientTubo);
     this.nodoPosOrientTubo.add(this.nodoRaizCoche);
+  }
+
+  setCamaraSubjetiva(camara){
+    this.camara = camara;
+    this.nodoRaizCoche.add(camara);
+  }
+
+  getCamaraSubjetiva(){
+    return this.camara;
   }
 
   // Funcion que modela estructura base del coche
