@@ -5,6 +5,9 @@ class PowerUp extends THREE.Object3D {
   constructor(gui,titleGui) {
     super();
     
+    this.reloj = new THREE. Clock ( ) ;
+    this.velocidad = Math.PI / 2 ;
+
     this.createGUI(gui,titleGui);
     
     var geometry = new THREE.CylinderGeometry(0.01 , 0.5 , 0.75 , 4);
@@ -30,7 +33,19 @@ class PowerUp extends THREE.Object3D {
     /* var esfera_resta1 = new THREE.Mesh(new THREE.CylinderGeometry(0.25 , 0.2 , 1));
     esfera_resta1.rotateZ(-Math.PI/2);
     boost.subtract([esfera_resta1]); */
-    this.add(boost.toMesh());
+    //this.add(boost.toMesh());
+
+    var powerup_mesh = boost.toMesh();
+
+    this.nodoRaiz = new THREE.Object3D();
+    this.nodoRaiz.add(powerup_mesh);
+
+    this.add(this.nodoRaiz);
+    
+    this.cajaFigura = new THREE. Box3 ( ) ;
+    this.cajaFigura.setFromObject ( this.nodoRaiz ) ;
+    this.cajaVisible = new THREE.Box3Helper( this.cajaFigura , 0xCF00 ) ;
+    this.add ( this.cajaVisible ) ;
   }
 
   
@@ -113,7 +128,7 @@ class PowerUp extends THREE.Object3D {
   } */
   
   update () {
-    // Con independencia de cómo se escriban las 3 siguientes líneas, el orden en el que se aplican las transformaciones es:
+    /* // Con independencia de cómo se escriban las 3 siguientes líneas, el orden en el que se aplican las transformaciones es:
     // Primero, el escalado
     // Segundo, la rotación en Z
     // Después, la rotación en Y
@@ -129,11 +144,18 @@ class PowerUp extends THREE.Object3D {
     /* if(this.guiControls.angulo !== this.angle){
       this.angle = this.guiControls.angulo;
       this.changeAngle(this.guiControls.angulo);
-    } */
+    } *
     
     this.position.set (this.guiControls.posX,this.guiControls.posY,this.guiControls.posZ);
     this.rotation.set (this.guiControls.rotX,this.guiControls.rotY,this.guiControls.rotZ);
-    this.scale.set (this.guiControls.sizeX,this.guiControls.sizeY,this.guiControls.sizeZ);
+    this.scale.set (this.guiControls.sizeX,this.guiControls.sizeY,this.guiControls.sizeZ); */
+
+    var segundosTranscurridos = this.reloj.getDelta ( ); 
+    var esp_ang = this.velocidad * segundosTranscurridos ;
+    this.nodoRaiz.rotateY(esp_ang);
+
+    this.cajaFigura.setFromObject ( this.nodoRaiz ) ;
+    this.cajaVisible = new THREE.Box3Helper( this.cajaFigura , 0xCF00 ) ;
   }
 }
 

@@ -36,7 +36,17 @@ class Valla extends THREE.Object3D {
     
 
     var valla = valla_csg.toMesh();
-    this.add(valla);
+    //this.add(valla);
+
+    this.nodoRaiz = new THREE.Object3D();
+    this.nodoRaiz.add(valla);
+
+    this.add(this.nodoRaiz);
+    
+    this.cajaFigura = new THREE. Box3 ( ) ;
+    this.cajaFigura.setFromObject ( this.nodoRaiz ) ;
+    this.cajaVisible = new THREE.Box3Helper( this.cajaFigura , 0xCF00 ) ;
+    this.add ( this.cajaVisible ) ;
 
   }
   
@@ -96,6 +106,9 @@ class Valla extends THREE.Object3D {
     // this.position.set (this.guiControls.posX,this.guiControls.posY,this.guiControls.posZ);
     // this.rotation.set (this.guiControls.rotX,this.guiControls.rotY,this.guiControls.rotZ);
     // this.scale.set (this.guiControls.sizeX,this.guiControls.sizeY,this.guiControls.sizeZ);
+
+    this.cajaFigura.setFromObject ( this.nodoRaiz ) ;
+    this.cajaVisible = new THREE.Box3Helper( this.cajaFigura , 0xCF00 ) ;
   }
 }
 

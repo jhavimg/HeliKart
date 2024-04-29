@@ -31,8 +31,10 @@ class MyScene extends THREE.Scene {
     this.circuito = new Circuito(this.gui, "Controles circuito");
     this.add(this.circuito);
 
-    this.coche = new Coche2(this.circuito.tubeGeometry, this.gui, "Controles coche");
-    this.add(this.coche);
+    this.coche1 = new Tronco(this.gui, "Controles");
+    //this.coche1 = new Coche(this.circuito.tubeGeometry, this.gui, "Controles");
+    //this.coche1.setPositionCoche(1.5, 0, 0);
+    this.add(this.coche1);
 
     this.clock = new THREE.Clock();
     this.t = 0;
@@ -67,6 +69,8 @@ class MyScene extends THREE.Scene {
     this.cameraControl.zoomSpeed = -2;
     this.cameraControl.panSpeed = 0.5;
     this.cameraControl.target = look;
+
+
   }
   
   createGround () {
@@ -163,7 +167,8 @@ class MyScene extends THREE.Scene {
     if (this.stats) this.stats.update();
     this.cameraControl.update();
 
-    this.coche.update();
+  
+    this.coche1.update();
 
     this.renderer.render (this, this.getCamera());
     requestAnimationFrame(() => this.update())
