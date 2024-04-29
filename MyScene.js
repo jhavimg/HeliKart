@@ -69,7 +69,7 @@ class MyScene extends THREE.Scene {
     this.cameraControl.rotateSpeed = 5;
     this.cameraControl.zoomSpeed = -2;
     this.cameraControl.panSpeed = 0.5;
-    this.cameraControl.target = look; 
+    this.cameraControl.target = look;
   }
 
   createCameraSubjetiva(coche){
@@ -190,7 +190,8 @@ class MyScene extends THREE.Scene {
     if (this.stats) this.stats.update();
     this.cameraControl.update();
 
-    this.coche.update();
+  
+    this.coche1.update();
 
     this.renderer.render (this, this.getCamera());
     requestAnimationFrame(() => this.update())

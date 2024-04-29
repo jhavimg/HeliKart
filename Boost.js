@@ -4,6 +4,9 @@ import { CSG } from '../libs/CSG-v2.js'
 class Boost extends THREE.Object3D {
     constructor(gui, titleGui) {
         super();
+
+        this.reloj = new THREE. Clock ( ) ;
+        this.velocidad = Math.PI / 2 ;
         
         var material = new THREE.MeshStandardMaterial({
           color: 0x3C4DF5,
@@ -81,11 +84,35 @@ class Boost extends THREE.Object3D {
         csg.union([propulsorMesh]);
         
         var boost = csg.toMesh();
-        this.add(boost);
+        //this.add(boost);
+
+        //var tronco = tronco_csg.toMesh();
+
+        this.nodoRaiz = new THREE.Object3D();
+        this.nodoRaiz.add(boost);
+
+        this.add(this.nodoRaiz);
+        
+        this.cajaFigura = new THREE. Box3 ( ) ;
+        this.cajaFigura.setFromObject ( this.nodoRaiz ) ;
+        this.cajaVisible = new THREE.Box3Helper( this.cajaFigura , 0xCF00 ) ;
+        this.add ( this.cajaVisible ) ;
         
     }
 
-    update() { }
+    update() {
+
+      var segundosTranscurridos = this.reloj.getDelta ( ); 
+      var esp_ang = this.velocidad * segundosTranscurridos ;
+      this.nodoRaiz.rotateY(esp_ang);
+
+      this.cajaFigura.setFromObject ( this.nodoRaiz ) ;
+      this.cajaVisible = new THREE.Box3Helper( this.cajaFigura , 0xCF00 ) ;
+    }
+
+    getCaja(){
+      return this.cajaFigura;
+    }
 }
 
 export { Boost };

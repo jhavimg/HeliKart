@@ -3,25 +3,93 @@ import { CSG } from '../libs/CSG-v2.js'
 import { helice } from './helice.js';
  
 class Coche extends THREE.Object3D {
-  constructor(gui,titleGui) {
+  constructor(tubeGeo, gui,titleGui) {
     super();
     
     this.createGUI(gui,titleGui);
+    
+    this.relojElice = new THREE. Clock ( ) ;
+    this.velocidadElice = 3 * Math.PI ;
 
-    this.reloj = new THREE. Clock ( ) ;
-    this.velocidadElice = Math.PI ;
+    //velocidad de movimiento de las animaciones///////////
+    this.velocidadSalto = 1.5 ;
+    this.velocidadBrazo = 1;
+    this.velocidadCalandra = -10;
+    this.tiempoEspera = 0;
+    this.tiempoEsperaMaximo = 2;
+    //////////////////////////////////////////////////////
+
+    //Prueba de choques//////////////////////////////////////////////////
+    this.avanza = 0.1;
+    this.posIni = -2.5;
+    this.cochedetinido = false;
+    this.mantenerArriba = false;
+    //////////////////////////////////////////////////////////////////////
+
+
+    //Variables animación salto///////////////////////////////////////////////////////////////////////////////
     this.tituloGui = titleGui
     this.variacion = 0.07; //como va a aumentar la x a mas chica mas lento sube
     this.alturaMax = 3;  //la altura maxima a la que llega el coche
     this.xIni = -3.8729833462074; //esto depende de la funcion que se elija => -0.2x² + alturaMaxima
     this.x = this.xIni; //es la x de donde va a salir la Y
-    var mat = new THREE.MeshStandardMaterial({ color: 0xFFFF00 });
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    this.variacion = 0.05;              //como va a aumentar la x a mas chica mas lento sube
-    this.alturaMax = 3;                 //la altura maxima a la que llega el coche
-    this.xIni = -3.8729833462074;       //esto depende de la funcion que se elija => -0.2x² + alturaMaxima
-    this.x = this.xIni;                 //es la x de donde va a salir la Y
+    var chasis = this.createChasis();
 
+    var ruedaD = this.createRuedas();
+    ruedaD.position.set(-0.5 - 0.7 , -0.15 , 0);
+    var ruedaT = this.createRuedas();
+    ruedaT.position.set(0.5 + 0.7 , -0.15 , 0);
+
+    var motor = this.createEngine();
+    motor.position.set(1.1, 0.5, 0);
+
+    var brazo = this.createBrazo();
+    brazo.position.set(1.1, 0.7, 0);
+
+    //Calandra y varible para su movimiento/////////
+    this.angleC = 0;
+    //this.variacion_angleCIni = -0.08;
+    this.calandra = this.createCalandra();
+    this.calandra.scale.set(1, 0.65, 0.65);
+    this.calandra.rotateZ(this.angleC);
+    this.calandra.position.set(-1.5, 0.26, 0);
+    /////////////////////////////////////////////////////
+
+    this.nodoRaizCoche = new THREE.Object3D();
+    this.nodoRaizCoche.add(chasis);
+    this.nodoRaizCoche.add(ruedaD);
+    this.nodoRaizCoche.add(ruedaT);
+    this.nodoRaizCoche.add(motor);
+    this.nodoRaizCoche.add(this.calandra);
+    this.nodoRaizCoche.add(brazo);
+
+    this.nodoRaizCoche.rotateY(Math.PI/2);
+    
+    this.nodoRaizCoche.scale.set(0.5, 0.5, 0.5); //Escalado del coche para ponerlo en el circuito
+    this.coche = new THREE.Object3D();
+    
+    this.add(this.nodoRaizCoche);
+    
+    this.tubo = tubeGeo;
+    this.path = tubeGeo.parameters.path; 
+    this.radio = tubeGeo.parameters.radius;
+    this.segmentos = tubeGeo.parameters.tubularSegments;
+
+    // Inicialización de nodoPosOrientTubo
+    this.nodoPosOrientTubo = new THREE.Object3D();
+    this.add(this.nodoPosOrientTubo);
+    this.nodoPosOrientTubo.add(this.nodoRaizCoche);
+
+    this.cajaFigura = new THREE. Box3 ( ) ;
+    this.cajaFigura.setFromObject ( this.nodoRaizCoche ) ;
+    this.cajaVisible = new THREE.Box3Helper( this.cajaFigura , 0xCF00 ) ;
+    this.add ( this.cajaVisible ) ;
+    //this.add(this.coche)
+  }
+
+  createChasis(){
     var mat = new THREE.MeshStandardMaterial({ 
       color: 0xFFFF00,
       metalness: 0.5,      
@@ -75,66 +143,23 @@ class Coche extends THREE.Object3D {
     cristalesGeom.rotateY(Math.PI/4);
     cristalesGeom.translate(0 ,0.7 , 0);
     var cristales = new THREE.Mesh(cristalesGeom , new THREE.MeshStandardMaterial({color: 0x0000FF, transparent: true,opacity: 0.5}));
+    cristales.scale.set(1.5 , 0.75 , 1)
 
-    var coche = new CSG();
-    coche.union([cuerpo, morro_t , morro_d , techoFinal]);
+    var coche_csg = new CSG();
+    coche_csg.union([cuerpo, morro_t , morro_d , techoFinal]);
 
     var huecoMotor = new THREE.BoxGeometry(0.45, 0.4, 0.3);
     huecoMotor.translate(0.75, 0.5, 0);
     var huecoMotorMesh = new THREE.Mesh(huecoMotor, new THREE.MeshNormalMaterial());
-    coche.subtract([huecoMotorMesh]);
+    coche_csg.subtract([huecoMotorMesh]);
 
-    var cuerpoMesh = coche.toMesh();
-    //coche_mesh.scale.set(1.5 , 0.75 , 1);
-    this.coche = new THREE.Mesh();
-    this.coche.add(cuerpoMesh);
-    this.coche.add(cristales);
-    this.coche.scale.set(1.5 , 0.75 , 1);
+    var coche_mesh = coche_csg.toMesh();
+    coche_mesh.scale.set(1.5 , 0.75 , 1);
+    var chasis = new THREE.Mesh();
+    chasis.add(coche_mesh);
+    chasis.add(cristales);
 
-    var ruedaD = this.createRuedas();
-    ruedaD.position.set(-0.5 - 0.7 , -0.15 , 0);
-    var ruedaT = this.createRuedas();
-    ruedaT.position.set(0.5 + 0.7 , -0.15 , 0);
-    // this.add(ruedaD);
-    // this.add(ruedaT);
-    // this.add(resultado);
-    this.coche.add(ruedaD);
-    this.coche.add(ruedaT);
-
-    var motor = this.createEngine();
-    motor.position.set(1.1, 0.5, 0);
-    // this.add(motor);
-    this.coche.add(motor);
-
-    var brazo = this.createBrazo();
-    brazo.position.set(1.1, 0.7, 0);
-    // this.add(brazo);
-    this.coche.add(brazo);
-
-    this.angleC = 0;
-    this.variacion_angleCIni = -0.08;
-    this.calandra = this.createCalandra();
-    this.calandra.scale.set(1, 0.65, 0.65);
-    this.calandra.rotateZ(this.angleC);
-    this.calandra.position.set(-1.5, 0.26, 0);
-
-    // this.add(this.calandra);
-    this.coche.add(this.calandra);
-    this.rotateY(Math.PI /2);
-    this.scale.set(0.4, 0.4, 0.4);
-
-    this.add(this.coche);
-
-    // Posicionamiento de coche en tubo
-    // this.tubo = tubeGeo;
-    // this.path = tubeGeo.parameters.path; 
-    // this.radio = tubeGeo.parameters.radius;
-    // this.segmentos = tubeGeo.parameters.tubularSegments;
-
-    // // Inicialización de nodoPosOrientTubo
-    // this.nodoPosOrientTubo = new THREE.Object3D();
-    // this.add(this.nodoPosOrientTubo);
-    // this.nodoPosOrientTubo.add(this.coche);
+    return chasis;
   }
 
   createEngine(){
@@ -406,16 +431,22 @@ class Coche extends THREE.Object3D {
   }
 
   doSalto(salto){
+    this.relojSalto = new THREE.Clock();
     this.hacerSalto = salto;
+    this.relojBrazo = new THREE.Clock();
+    this.subir = salto;
   }
 
   subirBrazo(subir){
+    this.relojBrazo = new THREE.Clock();
     this.subir = subir;
   }
 
   disparar(disparo){
+    this.relojCalandra = new THREE.Clock();
     this.abrir = disparo;
   }
+
   //funcion que saca la Y de la parabola -0.2x² + alturaMax
   calcularY(x) {
     var y = -0.2 * x * x + this.alturaMax;
@@ -423,8 +454,10 @@ class Coche extends THREE.Object3D {
   }
 
   salto(){
-    this.position.set(0 , this.calcularY(this.x) , 0); //establece la altura
-    this.x += this.variacion;
+    var segundosTranscurridos = this.relojSalto.getDelta ( ); 
+    var variacion = this.velocidadSalto * segundosTranscurridos ;
+    this.nodoRaizCoche.position.set(0 , this.calcularY(this.x) , 0); //establece la altura
+    this.x += variacion;
     if(this.x >= Math.abs(this.xIni)){  //si llega al final de la palabola desactiva la animación
       this.hacerSalto = false;
       this.x = this.xIni;
@@ -432,33 +465,60 @@ class Coche extends THREE.Object3D {
   }
 
   volar(){
-    //console.log(this.angle);
+    var segundosTranscurridos = this.relojBrazo.getDelta ( ); 
+    var variacion = this.velocidadBrazo * segundosTranscurridos ;
 
-    if(this.angle <= 0){
-      this.variacion_angle = this.variacion_angleIni;
-    }else if(this.angle >= Math.PI /2){
-      this.variacion_angle -= this.variacion_angleIni;
+    if (this.angle >= Math.PI / 2 && !this.mantenerArriba) {
+      this.tiempoEspera = this.tiempoEsperaMaximo;
+      this.mantenerArriba = true;
+    }
+  
+    if (this.tiempoEspera > 0) {
+      this.tiempoEspera -= segundosTranscurridos;
+      this.variacion_angle = 0;
+    }else{
+      if(this.angle <= 0){
+        this.variacion_angle = variacion;
+      }else if(this.angle >= Math.PI /2){
+        this.variacion_angle -= variacion;
+      }
     }
 
     this.angle += this.variacion_angle;
-    //console.log(this.angle);
     this.brazo_movil.rotation.z = this.angle;
+
+    if(this.angle < 0){
+      this.subir = false;
+      this.brazo_movil.rotation.z = 0;
+      this.angle = 0;
+      this.mantenerArriba = false;
+    }
   }
 
   hacerDisparo(){
+    var segundosTranscurridos = this.relojCalandra.getDelta ( ); 
+    var variacion = this.velocidadCalandra * segundosTranscurridos ;
+
     if(this.angleC >= 0){
-      this.variacion_angleC = this.variacion_angleCIni;
+      this.variacion_angleC = variacion;
     }else if(this.angleC <= -Math.PI /1.1){
-      this.variacion_angleC = -this.variacion_angleCIni;
+      this.variacion_angleC = -variacion;
     }
 
     this.angleC += this.variacion_angleC;
-    console.log(this.variacion_angleC);
     this.calandra.rotation.z = this.angleC;
 
-    if(this.angleC >= 0){
+    if(this.angleC > 0){
       this.abrir = false;
+      this.calandra.rotation.z = 0;
+      this.angleC = 0;
     }
+  }
+
+  deternerCoche(){
+    this.avanza = 0;
+    this.cochedetinido = true;
+    this.posIni = 0;
   }
   
   update () {
@@ -473,28 +533,47 @@ class Coche extends THREE.Object3D {
       this.hacerDisparo();
     }
 
-    
-    this.velocidad = Math.PI / 40;
+    if(this.cochedetinido){
+      this.nodoRaizCoche.position.set(-1 , 0 , 0);
 
-    var segundosTranscurridos = this.reloj.getDelta ( ); 
+    }
+
+    var segundosTranscurridos = this.relojElice.getDelta ( ); 
     var esp_ang = this.velocidadElice * segundosTranscurridos ;
     this.elice.rotateX(esp_ang);
 
+    // Animación para movimiento por el tubo
     // Posicionamiento en tubo
-    // var t = (performance.now() % 10000) / 10000; // Ejemplo de animación continua
-    // var posTmp = this.path.getPointAt(t);
-    // var tangente = this.path.getTangentAt(t);
-    // var segmentoActual = Math.floor(t * this.segmentos);
-    // var binormal = this.tubo.binormals[segmentoActual];
+    var t = (performance.now() % 10000) / (10000);
+    var posTmp = this.path.getPointAt(t);
+    var tangente = this.path.getTangentAt(t);
+    var segmentoActual = Math.floor(t * this.segmentos);
+    var binormal = this.tubo.binormals[segmentoActual];
 
-    // // Desplazamiento adicional en la dirección de la binormal para posicionar el coche encima del tubo
-    // var desplazamiento = binormal.clone().multiplyScalar(this.radio + 0.5); // Ajusta este valor según la altura del coche
-    // posTmp.add(desplazamiento);
+    // Desplazamiento adicional en la dirección de la binormal para posicionar el coche encima del tubo
+    var desplazamiento = binormal.clone().multiplyScalar(this.radio + 0.5); // Ajusta este valor según la altura del coche
+    posTmp.add(desplazamiento);
 
-    // // Posicionar y orientar el nodo del coche
-    // this.nodoPosOrientTubo.position.copy(posTmp);
-    // this.nodoPosOrientTubo.up = binormal;
-    // this.nodoPosOrientTubo.lookAt(posTmp.clone().add(tangente));
+    // Posicionar y orientar el nodo del coche
+    /*this.nodoPosOrientTubo.position.copy(posTmp);
+    this.nodoPosOrientTubo.up = binormal;
+    this.nodoPosOrientTubo.lookAt(posTmp.clone().add(tangente));*/ 
+
+    this.cajaFigura.setFromObject ( this.nodoRaizCoche ) ;
+    this.cajaVisible = new THREE.Box3Helper( this.cajaFigura , 0xCF00 ) ;
+  }
+
+  getCaja(){
+    return this.cajaFigura;
+  }
+
+  setCamara(camara){
+    this.camara = camara;
+    this.add(this.camara);
+  }
+
+  getCamara(){
+    return this.camara;
   }
 }
 
