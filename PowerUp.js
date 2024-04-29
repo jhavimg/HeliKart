@@ -157,6 +157,10 @@ class PowerUp extends THREE.Object3D {
     this.cajaFigura.setFromObject ( this.nodoRaiz ) ;
     this.cajaVisible = new THREE.Box3Helper( this.cajaFigura , 0xCF00 ) ;
   }
+  
+  getCaja(){
+    return this.cajaFigura;
+  }
 }
 
 export { PowerUp };
