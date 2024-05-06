@@ -79,7 +79,7 @@ class MyScene extends THREE.Scene {
     var camaraSubjetiva = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 50);
     coche.setCamaraSubjetiva(camaraSubjetiva);
 
-    camaraSubjetiva.position.set (15, 6, 0);
+    camaraSubjetiva.position.set (15, 5, 0);
 
     var puntoDeMiraRelativo = new THREE.Vector3 (0, -10, 30);
 

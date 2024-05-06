@@ -84,7 +84,7 @@ class Coche extends THREE.Object3D {
     // Inicialización de nodoPosOrientTubo
     this.nodoPosOrientTubo = new THREE.Object3D();
     this.nodoPosOrientTubo.add(this.nodoRaizCoche);
-    this.nodoRaizCoche.position.y = this.radio + 0.5;
+    this.nodoRaizCoche.position.y = this.radio + 0.15;
     this.add(this.nodoPosOrientTubo);
 
     // Hitbox
@@ -311,7 +311,7 @@ class Coche extends THREE.Object3D {
 
   }
 
-  createHelice(titulo){
+  createHelice(){
     var elice1 = new helice(this.gui , this.tituloGui);
 
     var baseGeom =new THREE.CylinderGeometry(0.05 , 0.05 , 0.05);
@@ -446,7 +446,6 @@ class Coche extends THREE.Object3D {
 
   doSalto(salto){
     this.relojSalto = new THREE.Clock();
-    console.log("h");
     this.hacerSalto = salto;
     this.relojBrazo = new THREE.Clock();
     this.subir = salto;
@@ -471,7 +470,7 @@ class Coche extends THREE.Object3D {
   salto(){
     var segundosTranscurridos = this.relojSalto.getDelta ( ); 
     var variacion = this.velocidadSalto * segundosTranscurridos ;
-    this.nodoRaizCoche.position.set(0 , this.calcularY(this.x) , 0); //establece la altura
+    this.nodoRaizCoche.position.set(0 , this.radio + 0.15 + this.calcularY(this.x) , 0); //establece la altura
     this.x += variacion;
     if(this.x >= Math.abs(this.xIni)){  //si llega al final de la palabola desactiva la animación
       this.hacerSalto = false;
