@@ -111,7 +111,7 @@ class Coche extends THREE.Object3D {
     morroGeom_t.translate(0.5 + 0.249 , 0 , 0);
     var morro_t = new THREE.Mesh(morroGeom_t);
 
-    var techo = new CSG();
+    var techo = new CSG(); 
 
     var techoGeom = new THREE.CylinderGeometry(0.5 , 0.71 , 0.4 , 4);
     techoGeom.rotateY(Math.PI/4);
