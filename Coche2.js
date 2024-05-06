@@ -487,7 +487,7 @@ class Coche2 extends THREE.Object3D {
     }
 
     this.angleC += this.variacion_angleC;
-    console.log(this.variacion_angleC);
+    //console.log(this.variacion_angleC);
     this.calandra.rotation.z = this.angleC;
 
     if(this.angleC >= 0){

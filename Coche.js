@@ -10,6 +10,9 @@ class Coche extends THREE.Object3D {
     
     this.relojElice = new THREE. Clock ( ) ;
     this.velocidadElice = 3 * Math.PI ;
+    this.relojMovimientoCoche = new THREE.Clock();
+    this.velocidadCoche = 0.05;
+    this.t = 0;
 
     //velocidad de movimiento de las animaciones///////////
     this.velocidadSalto = 1.5 ;
@@ -67,11 +70,12 @@ class Coche extends THREE.Object3D {
 
     this.nodoRaizCoche.rotateY(Math.PI/2);
     
-    this.nodoRaizCoche.scale.set(0.5, 0.5, 0.5); //Escalado del coche para ponerlo en el circuito
+    this.nodoRaizCoche.scale.set(0.25, 0.25, 0.25); //Escalado del coche para ponerlo en el circuito
     this.coche = new THREE.Object3D();
     
     this.add(this.nodoRaizCoche);
     
+    // Posicionamiento de coche en tubo
     this.tubo = tubeGeo;
     this.path = tubeGeo.parameters.path; 
     this.radio = tubeGeo.parameters.radius;
@@ -79,14 +83,15 @@ class Coche extends THREE.Object3D {
 
     // Inicialización de nodoPosOrientTubo
     this.nodoPosOrientTubo = new THREE.Object3D();
-    this.add(this.nodoPosOrientTubo);
     this.nodoPosOrientTubo.add(this.nodoRaizCoche);
+    this.nodoRaizCoche.position.y = this.radio + 0.5;
+    this.add(this.nodoPosOrientTubo);
 
-    this.cajaFigura = new THREE. Box3 ( ) ;
+    // Hitbox
+    this.cajaFigura = new THREE.Box3();
     this.cajaFigura.setFromObject ( this.nodoRaizCoche ) ;
     this.cajaVisible = new THREE.Box3Helper( this.cajaFigura , 0xCF00 ) ;
     this.add ( this.cajaVisible ) ;
-    //this.add(this.coche)
   }
 
   setCamaraSubjetiva(camara){
@@ -548,28 +553,26 @@ class Coche extends THREE.Object3D {
 
     }
 
+    // Movimiento hélices
     var segundosTranscurridos = this.relojElice.getDelta ( ); 
     var esp_ang = this.velocidadElice * segundosTranscurridos ;
     this.elice.rotateX(esp_ang);
 
     // Animación para movimiento por el tubo
     // Posicionamiento en tubo
-    var t = (performance.now() % 10000) / (10000);
-    console.log(t);
-    var posTmp = this.path.getPointAt(t);
-    var tangente = this.path.getTangentAt(t);
-    var segmentoActual = Math.floor(t * this.segmentos);
-    var binormal = this.tubo.binormals[segmentoActual];
+    this.t += this.relojMovimientoCoche.getDelta() * this.velocidadCoche;
+    this.t = this.t % 1;
 
-    // Desplazamiento adicional en la dirección de la binormal para posicionar el coche encima del tubo
-    var desplazamiento = binormal.clone().multiplyScalar(this.radio + 0.5); // Ajusta este valor según la altura del coche
-    posTmp.add(desplazamiento);
+    var posTmp = this.path.getPointAt(this.t);
+    this.nodoPosOrientTubo.position.copy (posTmp);
+    var tangente = this.path.getTangentAt(this.t);
+    posTmp.add (tangente);
+    var segmentoActual = Math.floor(this.t * this.segmentos);
 
-    // Posicionar y orientar el nodo del coche
-    this.nodoPosOrientTubo.position.copy(posTmp);
-    this.nodoPosOrientTubo.up = binormal;
-    this.nodoPosOrientTubo.lookAt(posTmp.clone().add(tangente)); 
+    this.nodoPosOrientTubo.up = this.tubo.binormals[segmentoActual];
+    this.nodoPosOrientTubo.lookAt (posTmp);
 
+    // Hitbox
     this.cajaFigura.setFromObject ( this.nodoRaizCoche ) ;
     this.cajaVisible = new THREE.Box3Helper( this.cajaFigura , 0xCF00 ) ;
   }
