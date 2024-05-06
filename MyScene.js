@@ -33,7 +33,9 @@ class MyScene extends THREE.Scene {
     this.circuito = new Circuito(this.gui, "Controles circuito");
     this.add(this.circuito);
 
-    this.coche = new Coche2(this.circuito.tubeGeometry, this.gui, "Controles coche");
+    this.coche = new Coche2(this.circuito.tubeGeometry, this.gui, "");
+
+    this.add(this.coche);
 
     // Camara subjetiva
     this.createCameraSubjetiva(this.coche);
@@ -191,7 +193,7 @@ class MyScene extends THREE.Scene {
     this.cameraControl.update();
 
   
-    this.coche1.update();
+    this.coche.update();
 
     this.renderer.render (this, this.getCamera());
     requestAnimationFrame(() => this.update())

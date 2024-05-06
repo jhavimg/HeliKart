@@ -3,7 +3,7 @@ import { CSG } from '../libs/CSG-v2.js'
 import { helice } from './helice.js';
  
 class Coche extends THREE.Object3D {
-  constructor(tubeGeo, gui,titleGui) {
+  constructor(gui,titleGui) {
     super();
     
     this.createGUI(gui,titleGui);
@@ -72,10 +72,10 @@ class Coche extends THREE.Object3D {
     
     this.add(this.nodoRaizCoche);
     
-    this.tubo = tubeGeo;
-    this.path = tubeGeo.parameters.path; 
-    this.radio = tubeGeo.parameters.radius;
-    this.segmentos = tubeGeo.parameters.tubularSegments;
+    // this.tubo = tubeGeo;
+    // this.path = tubeGeo.parameters.path; 
+    // this.radio = tubeGeo.parameters.radius;
+    // this.segmentos = tubeGeo.parameters.tubularSegments;
 
     // Inicialización de nodoPosOrientTubo
     this.nodoPosOrientTubo = new THREE.Object3D();
@@ -538,21 +538,21 @@ class Coche extends THREE.Object3D {
 
     }
 
-    var segundosTranscurridos = this.relojElice.getDelta ( ); 
-    var esp_ang = this.velocidadElice * segundosTranscurridos ;
-    this.elice.rotateX(esp_ang);
+    // var segundosTranscurridos = this.relojElice.getDelta ( ); 
+    // var esp_ang = this.velocidadElice * segundosTranscurridos ;
+    // this.elice.rotateX(esp_ang);
 
     // Animación para movimiento por el tubo
     // Posicionamiento en tubo
-    var t = (performance.now() % 10000) / (10000);
-    var posTmp = this.path.getPointAt(t);
-    var tangente = this.path.getTangentAt(t);
-    var segmentoActual = Math.floor(t * this.segmentos);
-    var binormal = this.tubo.binormals[segmentoActual];
+    // var t = (performance.now() % 10000) / (10000);
+    // var posTmp = this.path.getPointAt(t);
+    // var tangente = this.path.getTangentAt(t);
+    // var segmentoActual = Math.floor(t * this.segmentos);
+    // var binormal = this.tubo.binormals[segmentoActual];
 
     // Desplazamiento adicional en la dirección de la binormal para posicionar el coche encima del tubo
-    var desplazamiento = binormal.clone().multiplyScalar(this.radio + 0.5); // Ajusta este valor según la altura del coche
-    posTmp.add(desplazamiento);
+    // var desplazamiento = binormal.clone().multiplyScalar(this.radio + 0.5); // Ajusta este valor según la altura del coche
+    // posTmp.add(desplazamiento);
 
     // Posicionar y orientar el nodo del coche
     /*this.nodoPosOrientTubo.position.copy(posTmp);
