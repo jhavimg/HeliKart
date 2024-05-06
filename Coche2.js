@@ -10,6 +10,10 @@ class Coche2 extends THREE.Object3D {
 
     // Variables para animaciones
     this.reloj = new THREE. Clock ( ) ;
+    this.relojMovimientoCoche = new THREE.Clock();
+    this.velocidadCoche = 0.05;
+    this.t = 0;
+
     this.velocidadElice = Math.PI ;
     this.tituloGui = titleGui
     this.variacion = 0.07; //como va a aumentar la x a mas chica mas lento sube
@@ -88,8 +92,9 @@ class Coche2 extends THREE.Object3D {
 
     // Inicialización de nodoPosOrientTubo
     this.nodoPosOrientTubo = new THREE.Object3D();
-    this.add(this.nodoPosOrientTubo);
     this.nodoPosOrientTubo.add(this.nodoRaizCoche);
+    this.nodoRaizCoche.position.y = this.radio + 0.5;
+    this.add(this.nodoPosOrientTubo);
   }
 
   setCamaraSubjetiva(camara){
@@ -512,20 +517,17 @@ class Coche2 extends THREE.Object3D {
 
     // Animación para movimiento por el tubo
     // Posicionamiento en tubo
-    var t = (performance.now() % 10000) / 10000;
-    var posTmp = this.path.getPointAt(t);
-    var tangente = this.path.getTangentAt(t);
-    var segmentoActual = Math.floor(t * this.segmentos);
-    var binormal = this.tubo.binormals[segmentoActual];
+    this.t += this.relojMovimientoCoche.getDelta() * this.velocidadCoche;
+    this.t = this.t % 1;
 
-    // Desplazamiento adicional en la dirección de la binormal para posicionar el coche encima del tubo
-    var desplazamiento = binormal.clone().multiplyScalar(this.radio + 0.5); // Ajusta este valor según la altura del coche
-    posTmp.add(desplazamiento);
+    var posTmp = this.path.getPointAt(this.t);
+    this.nodoPosOrientTubo.position.copy (posTmp);
+    var tangente = this.path.getTangentAt(this.t);
+    posTmp.add (tangente);
+    var segmentoActual = Math.floor(this.t * this.segmentos);
 
-    // Posicionar y orientar el nodo del coche
-    this.nodoPosOrientTubo.position.copy(posTmp);
-    this.nodoPosOrientTubo.up = binormal;
-    this.nodoPosOrientTubo.lookAt(posTmp.clone().add(tangente));
+    this.nodoPosOrientTubo.up = this.tubo.binormals[segmentoActual];
+    this.nodoPosOrientTubo.lookAt (posTmp);
   }
 }
 

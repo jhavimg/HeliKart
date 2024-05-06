@@ -35,7 +35,7 @@ class Circuito extends THREE.Object3D {
 
         const radius = 4;
 
-        const segments = 200;
+        const segments = 500;
 
         this.tubeGeometry = new THREE.TubeGeometry(curve, segments, radius, segments, true);
 

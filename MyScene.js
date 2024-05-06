@@ -88,6 +88,7 @@ class MyScene extends THREE.Scene {
     this.target.add (puntoDeMiraRelativo);
 
     camaraSubjetiva.lookAt (this.target);
+
   }
   
   createGround () {
