@@ -441,6 +441,7 @@ class Coche extends THREE.Object3D {
 
   doSalto(salto){
     this.relojSalto = new THREE.Clock();
+    console.log("h");
     this.hacerSalto = salto;
     this.relojBrazo = new THREE.Clock();
     this.subir = salto;
@@ -554,6 +555,7 @@ class Coche extends THREE.Object3D {
     // Animación para movimiento por el tubo
     // Posicionamiento en tubo
     var t = (performance.now() % 10000) / (10000);
+    console.log(t);
     var posTmp = this.path.getPointAt(t);
     var tangente = this.path.getTangentAt(t);
     var segmentoActual = Math.floor(t * this.segmentos);

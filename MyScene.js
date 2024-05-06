@@ -33,7 +33,7 @@ class MyScene extends THREE.Scene {
     this.circuito = new Circuito(this.gui, "Controles circuito");
     this.add(this.circuito);
 
-    this.coche = new Coche2(this.circuito.tubeGeometry, this.gui, "");
+    this.coche = new Coche(this.circuito.tubeGeometry, this.gui, "coche");
 
     this.add(this.coche);
 
@@ -210,8 +210,18 @@ $(function () {
   window.addEventListener("keydown", (event) => {
     if (event.key === " ") {
       scene.toggleCamera();
+    }else if(event.key === 'w' || event.key === 'W' ){
+      scene.coche.doSalto(true);
+    }else if(event.key === 'w' || event.key === 'W' ){
+      scene.coche.doSalto(true);
     }
   });
+
+  window.addEventListener("click", (event)  => {
+    if(event.button === 0) {
+        console.log("se le ha dado al boton izquierdo");
+    }
+});
   
   scene.update();
 });
