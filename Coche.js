@@ -11,15 +11,17 @@ class Coche extends THREE.Object3D {
     this.relojElice = new THREE. Clock ( ) ;
     this.velocidadElice = 3 * Math.PI ;
     this.relojMovimientoCoche = new THREE.Clock();
-    this.velocidadCoche = 0.05;
-    this.t = 0;
+    this.t = 0.07;
+    //this.relojGiro = new THREE.Clock();
 
     //velocidad de movimiento de las animaciones///////////
     this.velocidadSalto = 1.5 ;
     this.velocidadBrazo = 1;
     this.velocidadCalandra = -10;
+    this.velocidadCoche = 0.025;
     this.tiempoEspera = 0;
     this.tiempoEsperaMaximo = 2;
+    this.velocidadGiro = Math.PI ;
     //////////////////////////////////////////////////////
 
     //Prueba de choques//////////////////////////////////////////////////
@@ -81,9 +83,13 @@ class Coche extends THREE.Object3D {
     this.radio = tubeGeo.parameters.radius;
     this.segmentos = tubeGeo.parameters.tubularSegments;
 
+    //Nodo rotacion
+    this.nodoRotacion = new THREE.Object3D();
+    this.nodoRotacion.add(this.nodoRaizCoche);
+
     // Inicialización de nodoPosOrientTubo
     this.nodoPosOrientTubo = new THREE.Object3D();
-    this.nodoPosOrientTubo.add(this.nodoRaizCoche);
+    this.nodoPosOrientTubo.add(this.nodoRotacion);
     this.nodoRaizCoche.position.y = this.radio + 0.15;
     this.add(this.nodoPosOrientTubo);
 
@@ -529,10 +535,28 @@ class Coche extends THREE.Object3D {
     }
   }
 
+  hacerGiro(direccion){
+    //this.relojGiro = new THREE.Clock();
+    //this.relojMovimientoCoche.getDelta();
+    this.girol = true;
+    this.giro(direccion);
+  }
+
   deternerCoche(){
     this.avanza = 0;
     this.cochedetinido = true;
     this.posIni = 0;
+  }
+
+  giro(direccion){
+    var segundosTranscurridos = this.relojMovimientoCoche.getDelta ( ); 
+    var esp_ang = this.velocidadGiro * segundosTranscurridos ;
+    console.log(segundosTranscurridos);
+    if(direccion == 'izquierda'){
+      this.nodoRotacion.rotateZ(-esp_ang);
+    }else if(direccion == 'derecha'){
+      this.nodoRotacion.rotateZ(esp_ang);
+    }
   }
   
   update () {
@@ -560,13 +584,13 @@ class Coche extends THREE.Object3D {
     // Animación para movimiento por el tubo
     // Posicionamiento en tubo
     this.t += this.relojMovimientoCoche.getDelta() * this.velocidadCoche;
-    this.t = this.t % 1;
-
-    var posTmp = this.path.getPointAt(this.t);
+    this.ti = this.t % 1;
+    //this.ti = 0.09;
+    var posTmp = this.path.getPointAt(this.ti);
     this.nodoPosOrientTubo.position.copy (posTmp);
-    var tangente = this.path.getTangentAt(this.t);
+    var tangente = this.path.getTangentAt(this.ti);
     posTmp.add (tangente);
-    var segmentoActual = Math.floor(this.t * this.segmentos);
+    var segmentoActual = Math.floor(this.ti * this.segmentos);
 
     this.nodoPosOrientTubo.up = this.tubo.binormals[segmentoActual];
     this.nodoPosOrientTubo.lookAt (posTmp);
@@ -578,6 +602,10 @@ class Coche extends THREE.Object3D {
 
   getCaja(){
     return this.cajaFigura;
+  }
+
+  getTi(){
+    return this.ti;
   }
 }
 

@@ -30,17 +30,43 @@ class MyScene extends THREE.Scene {
     // Default to normal camera
     this.currentCamera = 'normal';
 
+    //Se crea el circuito
     this.circuito = new Circuito(this.gui, "Controles circuito");
     this.add(this.circuito);
 
+    //Se crea el personaje
     this.coche = new Coche(this.circuito.tubeGeometry, this.gui, "coche");
-
     this.add(this.coche);
 
     // Camara subjetiva
     this.createCameraSubjetiva(this.coche);
 
-    this.add(this.coche);
+    this.createObjetos();
+    for (var i = 0; i < this.vectorCircuito.length; i++) {
+      var vector = this.vectorCircuito[i];
+      for(var j = 0; j < vector.length; j++){
+        this.add(vector[j]);
+      }
+    }
+  }
+
+  createObjetos(){
+    this.vectorCircuito = [];
+    this.parte1 = [];
+    this.parte2 = [];
+    this.parte3 = [];
+    this.parte4 = [];
+    this.parte5 = [];
+
+    //Añadir aqui lo objetos (cuidado con la posicion y el vector donde se introduce) 
+    this.parte1.push(new Valla(this.circuito.tubeGeometry , 0.05));
+    this.parte1.push(new PowerUp(this.circuito.tubeGeometry , 0.1)); 
+
+    this.vectorCircuito.push(this.parte1);
+    this.vectorCircuito.push(this.parte2);
+    this.vectorCircuito.push(this.parte3);
+    this.vectorCircuito.push(this.parte4);
+    this.vectorCircuito.push(this.parte5);
   }
   
   initStats() {
@@ -192,8 +218,26 @@ class MyScene extends THREE.Scene {
     
     if (this.stats) this.stats.update();
     this.cameraControl.update();
-
   
+    //this.coche.update();
+
+    for (var i = 0; i < this.parte1.length; i++) {
+      this.parte1[i].update();
+    }
+
+    var posicionCoche = this.coche.getTi();
+    if(posicionCoche >= 0 || posicionCoche < 0.25){
+
+      for (var j = 0; j < this.parte1.length; j++) {
+        if(this.coche.getCaja().intersectsBox(this.parte1[j].getCaja())){
+          console.log("ha chocado con " , this.parte1[j]);
+          var borrar = this.parte1[j];
+          this.parte1.splice(j , 1);
+          this.remove(borrar);
+        }
+      }
+    }
+
     this.coche.update();
 
     this.renderer.render (this, this.getCamera());
@@ -212,16 +256,15 @@ $(function () {
       scene.toggleCamera();
     }else if(event.key === 'w' || event.key === 'W' ){
       scene.coche.doSalto(true);
-    }else if(event.key === 'w' || event.key === 'W' ){
-      scene.coche.doSalto(true);
+    }else if(event.key === 'a' || event.key === 'A' ){
+      scene.coche.hacerGiro("izquierda");
+      //scene.coche.giro("izquierda");
+    }
+    else if(event.key === 'd' || event.key === 'D' ){
+      scene.coche.hacerGiro("derecha");
+      //scene.coche.giro("derecha");
     }
   });
-
-  window.addEventListener("click", (event)  => {
-    if(event.button === 0) {
-        console.log("se le ha dado al boton izquierdo");
-    }
-});
   
   scene.update();
 });
