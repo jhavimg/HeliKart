@@ -4,9 +4,40 @@ import {CSG} from '../libs/CSG-v2.js';
 const PUNTOS = -3;
 
 class Valla extends THREE.Object3D {
-  constructor(gui,titleGui) {
+  constructor(tubeGeo, t) {
     super();
+    this.ti = t;
+    //this.add(valla);
 
+    this.nodoRaiz = new THREE.Object3D();
+    this.nodoRaiz.add(this.createValla());
+
+    //this.add(this.nodoRaiz);
+
+    this.tubo = tubeGeo;
+    this.path = tubeGeo.parameters.path; 
+    this.radio = tubeGeo.parameters.radius;
+    this.segmentos = tubeGeo.parameters.tubularSegments;
+
+    //Nodo rotacion
+    this.nodoRotacion = new THREE.Object3D();
+    this.nodoRotacion.add(this.nodoRaiz);
+
+    // Inicialización de nodoPosOrientTubo
+    this.nodoPosOrientTubo = new THREE.Object3D();
+    this.nodoPosOrientTubo.add(this.nodoRotacion);
+    this.add(this.nodoPosOrientTubo);
+
+    this.nodoRaiz.scale.set(0.25 , 0.25 , 0.25);
+    this.nodoRaiz.position.y = this.radio;
+    
+    this.cajaFigura = new THREE. Box3 ( ) ;
+    this.cajaFigura.setFromObject ( this.nodoRaiz ) ;
+    this.cajaVisible = new THREE.Box3Helper( this.cajaFigura , 0xCF00 ) ;
+    this.add ( this.cajaVisible ) ;
+  }
+
+  createValla(){
     var texture = new THREE.TextureLoader().load('./img/wood.jpg');
     var material = new THREE.MeshStandardMaterial ({map: texture});
     
@@ -35,19 +66,7 @@ class Valla extends THREE.Object3D {
     valla_csg.union([paloMesh]);
     
 
-    var valla = valla_csg.toMesh();
-    //this.add(valla);
-
-    this.nodoRaiz = new THREE.Object3D();
-    this.nodoRaiz.add(valla);
-
-    this.add(this.nodoRaiz);
-    
-    this.cajaFigura = new THREE. Box3 ( ) ;
-    this.cajaFigura.setFromObject ( this.nodoRaiz ) ;
-    this.cajaVisible = new THREE.Box3Helper( this.cajaFigura , 0xCF00 ) ;
-    this.add ( this.cajaVisible ) ;
-
+    return valla_csg.toMesh();
   }
   
   createGUI (gui,titleGui) {
@@ -106,6 +125,16 @@ class Valla extends THREE.Object3D {
     // this.position.set (this.guiControls.posX,this.guiControls.posY,this.guiControls.posZ);
     // this.rotation.set (this.guiControls.rotX,this.guiControls.rotY,this.guiControls.rotZ);
     // this.scale.set (this.guiControls.sizeX,this.guiControls.sizeY,this.guiControls.sizeZ);
+
+    //this.ti = 0;
+    var posTmp = this.path.getPointAt(this.ti);
+    this.nodoPosOrientTubo.position.copy (posTmp);
+    var tangente = this.path.getTangentAt(this.ti);
+    posTmp.add (tangente);
+    var segmentoActual = Math.floor(this.ti * this.segmentos);
+
+    this.nodoPosOrientTubo.up = this.tubo.binormals[segmentoActual];
+    this.nodoPosOrientTubo.lookAt (posTmp);
 
     this.cajaFigura.setFromObject ( this.nodoRaiz ) ;
     this.cajaVisible = new THREE.Box3Helper( this.cajaFigura , 0xCF00 ) ;
