@@ -221,7 +221,7 @@ $(function () {
     if(event.button === 0) {
         console.log("se le ha dado al boton izquierdo");
     }
-});
+  });
   
   scene.update();
 });

@@ -84,7 +84,7 @@ class Coche extends THREE.Object3D {
     // Inicialización de nodoPosOrientTubo
     this.nodoPosOrientTubo = new THREE.Object3D();
     this.nodoPosOrientTubo.add(this.nodoRaizCoche);
-    this.nodoRaizCoche.position.y = this.radio + 0.5;
+    this.nodoRaizCoche.position.y = this.radio + 0.15;
     this.add(this.nodoPosOrientTubo);
 
     // Hitbox
