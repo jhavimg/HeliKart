@@ -114,7 +114,8 @@ class MyScene extends THREE.Scene {
 
   updateVelocidadInterfaz() {
     var velocidad = this.velocidad * 1000;
-    document.getElementById('velocidad').innerText = 'Velocidad: ' + velocidad + ' km/h';
+    var numeroRedondeado = velocidad.toFixed(2);
+    document.getElementById('velocidad').innerText = 'Velocidad: ' + numeroRedondeado + ' km/h';
   }
 
   initStats() {
