@@ -641,14 +641,6 @@ class Coche extends THREE.Object3D {
     return this.ti;
   }
 
-  addPuntos(puntos){
-    this.puntos += puntos;
-  }
-
-  getPuntos(){
-    return this.puntos;
-  }
-
   vueltaCompletada(){
     this.velocidadCoche += this.velocidadCoche * 0.1;
     console.log(this.velocidadCoche);
