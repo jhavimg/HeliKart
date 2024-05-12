@@ -53,9 +53,9 @@ class MyScene extends THREE.Scene {
     // Añadir zepelin al circuito
     this.pickableObjets = [];
     this.pickableObjets.push(
-      new Zepelin(this.circuito.tubeGeometry, 0.2)
+      new Zepelin(this.circuito.tubeGeometry, 0.08)
     );
-    
+
     this.add(this.pickableObjets[0]);
 
     // Picking
@@ -77,12 +77,12 @@ class MyScene extends THREE.Scene {
     this.parte5 = [];
 
     //Añadir aqui lo objetos (cuidado con la posicion y el vector donde se introduce) 
-    this.parte1.push(new Valla(this.circuito.tubeGeometry , 0.05));
-    this.parte1.push(new Tronco(this.circuito.tubeGeometry , 0.1)); 
-    this.parte2.push(new Boost(this.circuito.tubeGeometry , 0.21)); 
-    this.parte3.push(new Tronco(this.circuito.tubeGeometry , 0.41)); 
-    this.parte4.push(new Valla(this.circuito.tubeGeometry , 0.61)); 
-    this.parte5.push(new PowerUp(this.circuito.tubeGeometry , 0.81)); 
+    this.parte1.push(new Valla(this.circuito.tubeGeometry, 0.05));
+    this.parte1.push(new Tronco(this.circuito.tubeGeometry, 0.1));
+    this.parte2.push(new Boost(this.circuito.tubeGeometry, 0.21));
+    this.parte3.push(new Tronco(this.circuito.tubeGeometry, 0.41));
+    this.parte4.push(new Valla(this.circuito.tubeGeometry, 0.61));
+    this.parte5.push(new PowerUp(this.circuito.tubeGeometry, 0.81));
 
 
     this.vectorCircuito.push(this.parte1);
@@ -262,7 +262,7 @@ class MyScene extends THREE.Scene {
   }
 
   checkCollisions() {
-    this.coche.balas.forEach((bala, index) => {
+    /* this.coche.balas.forEach((bala, index) => {
       if (bala.position.distanceTo(this.pickableObjets[0].position) < 1) { // Asegúrate de que este umbral es adecuado
         var zepelin = this.pickableObjets[0];
         this.remove(zepelin);
@@ -270,7 +270,31 @@ class MyScene extends THREE.Scene {
         this.coche.remove(bala); // Elimina la bala
         this.coche.balas.splice(index, 1); // Elimina la bala de la lista
       }
-    });
+    }); */
+
+    for (let i = this.coche.balas.length - 1; i >= 0; i--) {
+      let bala = this.coche.balas[i];
+      this.pickableObjets.forEach((zepelin, index) => {
+        if (bala.position.distanceTo(zepelin.position) < 1) { // Ajusta según la escala y el tamaño
+          this.remove(zepelin);
+          this.pickableObjets.splice(index, 1); // Elimina el zepelin de la lista
+          this.coche.remove(bala); // Elimina la bala del coche
+          this.coche.balas.splice(i, 1); // Elimina la bala de la lista de balas
+        }
+      });
+    }
+  }
+
+  removeZepelin(zepelin) {
+    // Encuentra y elimina el zepelín de la lista de objetos seleccionables
+    const index = this.pickableObjets.indexOf(zepelin);
+    console.log(index);
+    if (index !== -1) {
+      this.pickableObjets.splice(index, 1); // Elimina el zepelín de la lista
+    }
+
+    // Elimina el zepelín de la escena
+    this.remove(zepelin);
   }
 
   update() {
@@ -285,13 +309,13 @@ class MyScene extends THREE.Scene {
     } */
     for (var i = 0; i < this.vectorCircuito.length; i++) {
       var vector = this.vectorCircuito[i];
-      for(var j = 0; j < vector.length; j++){
+      for (var j = 0; j < vector.length; j++) {
         vector[j].update();
       }
     }
 
     var posicionCoche = this.coche.getTi();
-    if(posicionCoche >= 0 || posicionCoche < 0.25){
+    if (posicionCoche >= 0 && posicionCoche < 0.2) {
 
       for (var j = 0; j < this.parte1.length; j++) {
         if (this.coche.getCaja().intersectsBox(this.parte1[j].getCaja())) {
@@ -301,44 +325,44 @@ class MyScene extends THREE.Scene {
           this.remove(borrar);
         }
       }
-    }else if(posicionCoche >= 0.2 && posicionCoche < 0.4){
-      //console.log("estoy");
+    } else if (posicionCoche >= 0.2 && posicionCoche < 0.4) {
+
       for (var j = 0; j < this.parte2.length; j++) {
-        if(this.coche.getCaja().intersectsBox(this.parte2[j].getCaja())){
-          console.log("ha chocado con " , this.parte2[j]);
+        if (this.coche.getCaja().intersectsBox(this.parte2[j].getCaja())) {
+          console.log("ha chocado con ", this.parte2[j]);
           var borrar = this.parte2[j];
-          this.parte2.splice(j , 1);
+          this.parte2.splice(j, 1);
           this.remove(borrar);
         }
       }
-    }else if(posicionCoche >= 0.4 && posicionCoche < 0.6){
+    } else if (posicionCoche >= 0.4 && posicionCoche < 0.6) {
 
       for (var j = 0; j < this.parte3.length; j++) {
-        if(this.coche.getCaja().intersectsBox(this.parte3[j].getCaja())){
-          console.log("ha chocado con " , this.parte3[j]);
+        if (this.coche.getCaja().intersectsBox(this.parte3[j].getCaja())) {
+          console.log("ha chocado con ", this.parte3[j]);
           var borrar = this.parte3[j];
-          this.parte3.splice(j , 1);
+          this.parte3.splice(j, 1);
           this.remove(borrar);
         }
       }
-    }else if(posicionCoche >= 0.6 && posicionCoche < 0.8){
+    } else if (posicionCoche >= 0.6 && posicionCoche < 0.8) {
 
       for (var j = 0; j < this.parte4.length; j++) {
-        if(this.coche.getCaja().intersectsBox(this.parte4[j].getCaja())){
-          console.log("ha chocado con " , this.parte4[j]);
+        if (this.coche.getCaja().intersectsBox(this.parte4[j].getCaja())) {
+          console.log("ha chocado con ", this.parte4[j]);
           var borrar = this.parte4[j];
-          this.parte4.splice(j , 1);
+          this.parte4.splice(j, 1);
           this.remove(borrar);
         }
       }
     }
-    else if(posicionCoche >= 0.8 && posicionCoche < 1){
+    else if (posicionCoche >= 0.8 && posicionCoche < 1) {
 
       for (var j = 0; j < this.parte5.length; j++) {
-        if(this.coche.getCaja().intersectsBox(this.parte5[j].getCaja())){
-          console.log("ha chocado con " , this.parte5[j]);
+        if (this.coche.getCaja().intersectsBox(this.parte5[j].getCaja())) {
+          console.log("ha chocado con ", this.parte5[j]);
           var borrar = this.parte5[j];
-          this.parte5.splice(j , 1);
+          this.parte5.splice(j, 1);
           this.remove(borrar);
         }
       }
@@ -346,6 +370,17 @@ class MyScene extends THREE.Scene {
 
     // Animaciones coche
     this.coche.update();
+    if (this.coche.getTi() < posicionCoche) {
+      console.log("vuelta completada");
+    }
+
+    // this.checkCollisions();
+
+    if (this.pickableObjets.length > 0) {
+      for (var i = 0; i < this.pickableObjets.length; i++) {
+        this.pickableObjets[i].update();
+      }
+    }
 
     this.renderer.render(this, this.getCamera());
     requestAnimationFrame(() => this.update())
@@ -373,20 +408,21 @@ $(function () {
     }
   });
 
-  window.addEventListener("mousedown", function(event) {
+  window.addEventListener("mousedown", function (event) {
     scene.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     scene.mouse.y = 1 - 2 * (event.clientY / window.innerHeight);
 
     scene.raycaster.setFromCamera(scene.mouse, scene.coche.getCamaraSubjetiva());
     var pickedObjects = scene.raycaster.intersectObjects(scene.pickableObjets, true);
 
-    if (pickedObjects.length > 0){
-        var obj = pickedObjects[0].object;
-        if (obj.userData instanceof Zepelin){
-            scene.coche.hacerDisparo(obj);
-        }
+    if (pickedObjects.length > 0) {
+      var obj = pickedObjects[0].object;
+      if (obj.userData instanceof Zepelin) {
+        console.log("Pick en zepelin");
+        scene.removeZepelin(obj.userData);
+      }
     }
-});
+  });
 
   scene.update();
 });
