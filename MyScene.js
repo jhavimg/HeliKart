@@ -53,7 +53,10 @@ class MyScene extends THREE.Scene {
     // Añadir zepelin al circuito
     this.pickableObjets = [];
     this.pickableObjets.push(
-      new Zepelin(this.circuito.tubeGeometry, 0.08)
+      new Zepelin(this.circuito.tubeGeometry, 0.08),
+      new Zepelin(this.circuito.tubeGeometry, 0.25),
+      new Zepelin(this.circuito.tubeGeometry, 0.5),
+      new Zepelin(this.circuito.tubeGeometry, 0.73),
     );
 
     this.add(this.pickableObjets[0]);
