@@ -1,0 +1,19 @@
+#panel {
+    width: 250px;
+    height: 150px;
+
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+
+    text-align: center;
+
+    background: rgba(0, 0, 0, 0.433);
+    color: white;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 20px;
+    z-index: 100;
+
+    box-shadow: 0 0 20px #03f;
+}

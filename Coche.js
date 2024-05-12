@@ -1,5 +1,7 @@
 import * as THREE from '../libs/three.module.js'
 import { CSG } from '../libs/CSG-v2.js'
+import * as TWEEN from '../libs/tween.esm.js'
+
 import { helice } from './helice.js';
  
 class Coche extends THREE.Object3D {
@@ -11,7 +13,7 @@ class Coche extends THREE.Object3D {
     this.relojElice = new THREE. Clock ( ) ;
     this.velocidadElice = 3 * Math.PI ;
     this.relojMovimientoCoche = new THREE.Clock();
-    this.t = 0.07;
+    this.t = 0;
     //this.relojGiro = new THREE.Clock();
 
     //velocidad de movimiento de las animaciones///////////
@@ -93,11 +95,31 @@ class Coche extends THREE.Object3D {
     this.nodoRaizCoche.position.y = this.radio + 0.15;
     this.add(this.nodoPosOrientTubo);
 
+    // Balas
+    this.balas = [];
+    this.nodoRaizCoche.add(this.balas);
+
     // Hitbox
     this.cajaFigura = new THREE.Box3();
     this.cajaFigura.setFromObject ( this.nodoRaizCoche ) ;
     this.cajaVisible = new THREE.Box3Helper( this.cajaFigura , 0xCF00 ) ;
     this.add ( this.cajaVisible ) ;
+  }
+
+  shoot(zepelin){
+    // Disparo al zepelin
+    const materialBala = new THREE.MeshStandardMaterial({ color: 0xff0000 });
+    var geometriaBala = new THREE.SphereGeometry(0.1);
+    const bala = new THREE.Mesh(geometriaBala, materialBala);
+    bala.position.copy(this.nodoRaizCoche.position);
+
+    var velocidadBala = 1;
+    var direccion = new THREE.Vector3();
+    direccion.subVectors(zepelin.userData.position, bala.position).normalize();
+    bala.velocity = direccion.multiplyScalar(velocidadBala);
+
+    this.balas.push(bala);
+    this.add(bala);
   }
 
   setCamaraSubjetiva(camara){
@@ -474,14 +496,24 @@ class Coche extends THREE.Object3D {
   }
 
   salto(){
-    var segundosTranscurridos = this.relojSalto.getDelta ( ); 
-    var variacion = this.velocidadSalto * segundosTranscurridos ;
-    this.nodoRaizCoche.position.set(0 , this.radio + 0.15 + this.calcularY(this.x) , 0); //establece la altura
-    this.x += variacion;
-    if(this.x >= Math.abs(this.xIni)){  //si llega al final de la palabola desactiva la animación
-      this.hacerSalto = false;
-      this.x = this.xIni;
-    }
+    this.hacerSalto = false;
+    // Definimos la altura final y el tiempo de animación
+    var alturaInicial = this.nodoRaizCoche.position.y;
+    var alturaFinal = this.nodoRaizCoche.position.y + 3;
+    var duracionAnimacion = 3000;
+
+    // Animacion subir arriba del salto
+    var tweenSaltoArriba = new TWEEN.Tween(this.nodoRaizCoche.position)
+      .to({ y: alturaFinal }, duracionAnimacion)
+      .easing(TWEEN.Easing.Quadratic.InOut);
+    
+    // Animación volver a abajo
+    var tweenSaltAbajo = new TWEEN.Tween(this.nodoRaizCoche.position)
+      .to({ y: alturaInicial}, duracionAnimacion)
+      .easing(TWEEN.Easing.Quadratic.InOut);
+
+    tweenSaltoArriba.chain(tweenSaltAbajo);
+    tweenSaltoArriba.start();
   }
 
   volar(){
@@ -515,24 +547,29 @@ class Coche extends THREE.Object3D {
     }
   }
 
-  hacerDisparo(){
-    var segundosTranscurridos = this.relojCalandra.getDelta ( ); 
-    var variacion = this.velocidadCalandra * segundosTranscurridos ;
+  hacerDisparo(zepelin){
+    // Define el ángulo final y el tiempo de animación
+    var anguloFinal = -Math.PI / 1.1;
+    var duracionAnimacion = 1000; // duración de la animación en milisegundos
 
-    if(this.angleC >= 0){
-      this.variacion_angleC = variacion;
-    }else if(this.angleC <= -Math.PI /1.1){
-      this.variacion_angleC = -variacion;
-    }
+    // Animación de apertura de la calandra
+    var tweenAbrir = new TWEEN.Tween(this.calandra.rotation)
+        .to({ z: anguloFinal }, duracionAnimacion)
+        .easing(TWEEN.Easing.Cubic.Out)
+        .onComplete(() => {
+            this.shoot(zepelin);  // Dispara cuando la animación se completa
+        });
 
-    this.angleC += this.variacion_angleC;
-    this.calandra.rotation.z = this.angleC;
+    // Animación de cierre de la calandra
+    var tweenCerrar = new TWEEN.Tween(this.calandra.rotation)
+        .to({ z: 0 }, duracionAnimacion)
+        .easing(TWEEN.Easing.Quadratic.In)
+        .onComplete(() => {
+        });
 
-    if(this.angleC > 0){
-      this.abrir = false;
-      this.calandra.rotation.z = 0;
-      this.angleC = 0;
-    }
+    // Encadena las animaciones para que una comience después de que la otra termine
+    tweenAbrir.chain(tweenCerrar);
+    tweenAbrir.start();
   }
 
   hacerGiro(direccion){
@@ -566,10 +603,6 @@ class Coche extends THREE.Object3D {
     if(this.subir){
       this.volar();
     }
-    
-    if(this.abrir){
-      this.hacerDisparo();
-    }
 
     if(this.cochedetinido){
       this.nodoRaizCoche.position.set(-1 , 0 , 0);
@@ -582,10 +615,9 @@ class Coche extends THREE.Object3D {
     this.elice.rotateX(esp_ang);
 
     // Animación para movimiento por el tubo
-    // Posicionamiento en tubo
     this.t += this.relojMovimientoCoche.getDelta() * this.velocidadCoche;
     this.ti = this.t % 1;
-    //this.ti = 0.09;
+    // this.ti = 0;
     var posTmp = this.path.getPointAt(this.ti);
     this.nodoPosOrientTubo.position.copy (posTmp);
     var tangente = this.path.getTangentAt(this.ti);
@@ -594,6 +626,11 @@ class Coche extends THREE.Object3D {
 
     this.nodoPosOrientTubo.up = this.tubo.binormals[segmentoActual];
     this.nodoPosOrientTubo.lookAt (posTmp);
+
+    // Disparo
+    this.balas.forEach(bala => {
+      bala.position.add(bala.velocity);
+    });
 
     // Hitbox
     this.cajaFigura.setFromObject ( this.nodoRaizCoche ) ;

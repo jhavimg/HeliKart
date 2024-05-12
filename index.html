@@ -6,6 +6,7 @@
     <title>HeliKart</title>
     <meta charset="utf-8">
     <script type="text/javascript" src="../libs/jquery.js"></script>
+    <link rel="stylesheet" href="style.css">
     
     <script type="importmap">
         {
@@ -15,23 +16,31 @@
         }
     </script>
 
-    <script type="module" src="MyScene.js"></script>    
-    
+    <script type="module" src="MyScene.js"></script>
+
     <style>
-        body{
+        body {
             margin: 0;
-            overflow: hidden; 
+            overflow: hidden;
         }
     </style>
 </head>
+
 <body>
 
-<!-- Div which will show statistical information -->
-<div id="Stats-output">
-</div>
+    <!-- Div which will show statistical information -->
+    <div id="Stats-output">
+    </div>
 
-<!-- Div which will hold the Output -->
-<div id="WebGL-output">
-</div>
+    <!-- Div which will hold the Output -->
+    <div id="WebGL-output">
+
+        <div id="panel">
+            <p id="mensajes"></p>
+            <p id="puntos"></p>
+            <p id="velocidad"></p>
+        </div>
+    </div>
 </body>
+
 </html>

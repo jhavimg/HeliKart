@@ -24,16 +24,78 @@ function generarPuntosCirculo(radio, numPuntos) {
 }
 
 class Zepelin extends THREE.Object3D {
-  constructor(gui,titleGui) {
+  constructor(tubeGeo, t) {
     super();
-    
-    // Se crea la parte de la interfaz que corresponde a la caja
-    // Se crea primero porque otros métodos usan las variables que se definen para la interfaz
-    this.createGUI(gui,titleGui);
+    this.ti = t;
 
+    this.nodoRaizZepelin = new THREE.Object3D();
+
+    this.globo = this.createGlobo();
+    this.globo.position.y = 1.7;
+    this.globo.userData = this;
+
+    this.nodoRaizZepelin.add(this.globo);
+
+    this.cabina = this.createCabina();
+    this.cabina.userData = this;
+    this.cabina.position.y = -0.1
+
+    this.nodoRaizZepelin.add(this.cabina);
+    
+    var flap1 = this.createFlaps();
+    flap1.userData = this;
+    flap1.position.set(0 , 1.3 , -4);
+    this.globo.add(flap1);
+
+    var flap2 = this.createFlaps();
+    flap2.userData = this;
+    flap2.position.set(1.3 , 0 , -4);
+    flap2.rotateX(-Math.PI/2);
+    this.globo.add(flap2);
+
+    var flap3 = this.createFlaps();
+    flap3.userData = this;
+    flap3.position.set(-1.3 , 0 , -4);
+    flap3.rotateX(Math.PI/2)
+    this.globo.add(flap3);
+
+    this.nodoRaizZepelin.scale.set(0.25 , 0.25 , 0.25);
+    this.add(this.nodoRaizZepelin);
+
+    this.nodoRaizZepelin.userData = this;
+    this.nodoRaizZepelin.rotateY(Math.PI / 2);
+
+    //Nodo rotacion
+    this.nodoRotacion = new THREE.Object3D();
+    this.nodoRotacion.add(this.nodoRaizZepelin);
+
+    // Posicionar zepelin en circuito
+    this.tubo = tubeGeo;
+    this.path = tubeGeo.parameters.path; 
+    this.radio = tubeGeo.parameters.radius;
+    this.segmentos = tubeGeo.parameters.tubularSegments;
+
+    
+
+    this.nodoPosOrientTubo = new THREE.Object3D();
+    this.nodoPosOrientTubo.add(this.nodoRotacion);
+    this.add(this.nodoPosOrientTubo);
+
+    this.nodoRaizZepelin.scale.set(0.25 , 0.25 , 0.25);
+    this.nodoRaizZepelin.position.y = this.radio + 1;
+
+    // Movimiento del zepelin
+    this.movimiento = true;
+    this.direccion = 1;
+    this.recorrido = 2.5;
+    this.velocidad = 0.005;
+  }
+
+  createGlobo(){
     var shape = new THREE.Shape();
     var puntos = generarPuntosCirculo(0.2 , 64);
-    shape.moveTo(puntos[0].x, puntos[0].y); // Esto siempre poner ponerlo
+    shape.moveTo(puntos[0].x, puntos[0].y);
+
     // Crear líneas hacia los puntos restantes
     for (var i = 1; i < puntos.length; i++) {
         shape.lineTo(puntos[i].x, puntos[i].y);
@@ -57,6 +119,10 @@ class Zepelin extends THREE.Object3D {
     var globo = new THREE.Mesh(geometry , mat);
     globo.position.y = 1.7;
 
+    return globo;
+  }
+
+  createCabina(){
     var cabina_cuerpo = new THREE.Mesh(new THREE.BoxGeometry(0.7 , 0.3 , 1.5) , new THREE.MeshStandardMaterial({color: 0xCFCFFF,}));
     var cabina_delantera = new THREE.Mesh(new THREE.CylinderGeometry(0.7 / 2 , 0.7 / 2 , 0.3) , new THREE.MeshNormalMaterial());
     var cabina_trasera = new THREE.Mesh(new THREE.CylinderGeometry(0.7 / 2 , 0.7 / 2 , 0.3) , new THREE.MeshNormalMaterial());
@@ -67,27 +133,8 @@ class Zepelin extends THREE.Object3D {
     var Figura_cabina = new CSG();
     Figura_cabina.union([cabina_cuerpo , cabina_delantera , cabina_trasera]);
     var cabina = Figura_cabina.toMesh();
-    cabina.position.y = -0.1
-    this.add(globo);
-    //this.add(cabina);
     
-    var flap1 = this.createFlaps();
-    flap1.position.set(0 , 1.3 , -4);
-    globo.add(flap1);
-
-    var flap2 = this.createFlaps();
-    flap2.position.set(1.3 , 0 , -4);
-    flap2.rotateX(-Math.PI/2);
-    globo.add(flap2);
-
-    var flap3 = this.createFlaps();
-    flap3.position.set(-1.3 , 0 , -4);
-    flap3.rotateX(Math.PI/2)
-    globo.add(flap3);
-
-    this.add(globo);
-    this.add(cabina);
-    this.scale.set(0.1 , 0.1 , 0.1);
+    return cabina;
   }
 
   createFlaps(){
@@ -115,69 +162,26 @@ class Zepelin extends THREE.Object3D {
     return flap;
   }
   
-  createGUI (gui,titleGui) {
-    // Controles para el tamaño, la orientación y la posición de la caja
-    this.guiControls = {
-      sizeX : 1.0,
-      sizeY : 1.0,
-      sizeZ : 1.0,
-      
-      rotX : 0.0,
-      rotY : 0.0,
-      rotZ : 0.0,
-      
-      posX : 0.0,
-      posY : 0.0,
-      posZ : 0.0,
-      
-      // Un botón para dejarlo todo en su posición inicial
-      // Cuando se pulse se ejecutará esta función.
-      reset : () => {
-        this.guiControls.sizeX = 1.0;
-        this.guiControls.sizeY = 1.0;
-        this.guiControls.sizeZ = 1.0;
-        
-        this.guiControls.rotX = 0.0;
-        this.guiControls.rotY = 0.0;
-        this.guiControls.rotZ = 0.0;
-        
-        this.guiControls.posX = 0.0;
-        this.guiControls.posY = 0.0;
-        this.guiControls.posZ = 0.0;
-      }
-    } 
-    
-    // Se crea una sección para los controles de la caja
-    var folder = gui.addFolder (titleGui);
-    // Estas lineas son las que añaden los componentes de la interfaz
-    // Las tres cifras indican un valor mínimo, un máximo y el incremento
-    // El método   listen()   permite que si se cambia el valor de la variable en código, el deslizador de la interfaz se actualice
-    folder.add (this.guiControls, 'sizeX', 0.1, 5.0, 0.01).name ('Tamaño X : ').listen();
-    folder.add (this.guiControls, 'sizeY', 0.1, 5.0, 0.01).name ('Tamaño Y : ').listen();
-    folder.add (this.guiControls, 'sizeZ', 0.1, 5.0, 0.01).name ('Tamaño Z : ').listen();
-    
-    folder.add (this.guiControls, 'rotX', 0.0, Math.PI/2, 0.01).name ('Rotación X : ').listen();
-    folder.add (this.guiControls, 'rotY', 0.0, Math.PI/2, 0.01).name ('Rotación Y : ').listen();
-    folder.add (this.guiControls, 'rotZ', 0.0, Math.PI/2, 0.01).name ('Rotación Z : ').listen();
-    
-    folder.add (this.guiControls, 'posX', -20.0, 20.0, 0.01).name ('Posición X : ').listen();
-    folder.add (this.guiControls, 'posY', 0.0, 10.0, 0.01).name ('Posición Y : ').listen();
-    folder.add (this.guiControls, 'posZ', -20.0, 20.0, 0.01).name ('Posición Z : ').listen();
-    
-    folder.add (this.guiControls, 'reset').name ('[ Reset ]');
-  }
-  
   update () {
-    // Con independencia de cómo se escriban las 3 siguientes líneas, el orden en el que se aplican las transformaciones es:
-    // Primero, el escalado
-    // Segundo, la rotación en Z
-    // Después, la rotación en Y
-    // Luego, la rotación en X
-    // Y por último la traslación
-   
-    //this.position.set (this.guiControls.posX,this.guiControls.posY,this.guiControls.posZ);
-    //this.rotation.set (this.guiControls.rotX,this.guiControls.rotY,this.guiControls.rotZ);
-    //this.scale.set (this.guiControls.sizeX,this.guiControls.sizeY,this.guiControls.sizeZ);
+
+    // Posicionar en circuito
+    var posTmp = this.path.getPointAt(this.ti);
+    this.nodoPosOrientTubo.position.copy (posTmp);
+    var tangente = this.path.getTangentAt(this.ti);
+    posTmp.add (tangente);
+    var segmentoActual = Math.floor(this.ti * this.segmentos);
+
+    this.nodoPosOrientTubo.up = this.tubo.binormals[segmentoActual];
+    this.nodoPosOrientTubo.lookAt (posTmp);
+
+    // if (this.movimiento)
+    //   this.position.x += this.velocidad * this.direccion;
+
+    // // Comprobar si el zepelín alcanza el límite máximo en cualquier dirección
+    // if (Math.abs(this.position.x) >= this.recorrido) {
+    //     this.direccion *= -1;
+    //     this.rotateY(Math.PI);
+    // }
   }
 }
 
