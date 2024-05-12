@@ -52,14 +52,15 @@ class MyScene extends THREE.Scene {
 
     // Añadir zepelin al circuito
     this.pickableObjets = [];
-    this.pickableObjets.push(
-      new Zepelin(this.circuito.tubeGeometry, 0.08),
-      new Zepelin(this.circuito.tubeGeometry, 0.25),
-      new Zepelin(this.circuito.tubeGeometry, 0.5),
-      new Zepelin(this.circuito.tubeGeometry, 0.73),
-    );
 
-    this.add(this.pickableObjets[0]);
+    this.pickableObjets.push(new Zepelin(this.circuito.tubeGeometry, 0.08));
+    this.pickableObjets.push(new Zepelin(this.circuito.tubeGeometry, 0.3));
+    this.pickableObjets.push(new Zepelin(this.circuito.tubeGeometry, 0.5));
+    this.pickableObjets.push(new Zepelin(this.circuito.tubeGeometry, 0.7));
+
+    for(var i = 0; i < this.pickableObjets.length; i++){
+      this.add(this.pickableObjets[i]);
+    }
 
     // Picking
     this.mouse = new THREE.Vector2();
