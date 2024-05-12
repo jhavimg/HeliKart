@@ -645,6 +645,12 @@ class Coche extends THREE.Object3D {
     this.velocidadCoche += this.velocidadCoche * 0.1;
     console.log(this.velocidadCoche);
   }
+
+  getVelocidad(){
+    return this.velocidadCoche;
+  }
+
+
 }
 
 export { Coche };
