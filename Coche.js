@@ -14,6 +14,7 @@ class Coche extends THREE.Object3D {
     this.velocidadElice = 3 * Math.PI ;
     this.relojMovimientoCoche = new THREE.Clock();
     this.t = 0;
+    this.puntos = 0;
     //this.relojGiro = new THREE.Clock();
 
     //velocidad de movimiento de las animaciones///////////
@@ -27,10 +28,10 @@ class Coche extends THREE.Object3D {
     //////////////////////////////////////////////////////
 
     //Prueba de choques//////////////////////////////////////////////////
-    this.avanza = 0.1;
+    /* this.avanza = 0.1;
     this.posIni = -2.5;
     this.cochedetinido = false;
-    this.mantenerArriba = false;
+    this.mantenerArriba = false; */
     //////////////////////////////////////////////////////////////////////
 
 
@@ -638,6 +639,19 @@ class Coche extends THREE.Object3D {
 
   getTi(){
     return this.ti;
+  }
+
+  addPuntos(puntos){
+    this.puntos += puntos;
+  }
+
+  getPuntos(){
+    return this.puntos;
+  }
+
+  vueltaCompletada(){
+    this.velocidadCoche += this.velocidadCoche * 0.1;
+    console.log(this.velocidadCoche);
   }
 }
 
