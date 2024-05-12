@@ -627,11 +627,6 @@ class Coche extends THREE.Object3D {
     this.nodoPosOrientTubo.up = this.tubo.binormals[segmentoActual];
     this.nodoPosOrientTubo.lookAt (posTmp);
 
-    // Disparo
-    this.balas.forEach(bala => {
-      bala.position.add(bala.velocity);
-    });
-
     // Hitbox
     this.cajaFigura.setFromObject ( this.nodoRaizCoche ) ;
     this.cajaVisible = new THREE.Box3Helper( this.cajaFigura , 0xCF00 ) ;

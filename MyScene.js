@@ -100,20 +100,16 @@ class MyScene extends THREE.Scene {
     velocidad.innerText = 'Velocidad: 0 km/h';
   }
 
-  updateScore() {
+  updatePuntos(puntos){
+    this.puntos += puntos;
+  }
+
+  updatePuntosInterfaz() {
     document.getElementById('puntos').innerText = 'Puntos: ' + this.puntos;
   }
 
-  updateSpeed() {
+  updateVelocidadInterfaz() {
     document.getElementById('velocidad').innerText = 'Velocidad: ' + this.velocidad + ' km/h';
-  }
-
-  calculateScore() {
-    this.puntos += 1;
-  }
-
-  calculateSpeed() {
-
   }
 
   initStats() {
@@ -261,34 +257,9 @@ class MyScene extends THREE.Scene {
     this.renderer.setSize(window.innerWidth, window.innerHeight);
   }
 
-  checkCollisions() {
-    /* this.coche.balas.forEach((bala, index) => {
-      if (bala.position.distanceTo(this.pickableObjets[0].position) < 1) { // Asegúrate de que este umbral es adecuado
-        var zepelin = this.pickableObjets[0];
-        this.remove(zepelin);
-        this.pickableObjets.splice(0, 1);
-        this.coche.remove(bala); // Elimina la bala
-        this.coche.balas.splice(index, 1); // Elimina la bala de la lista
-      }
-    }); */
-
-    for (let i = this.coche.balas.length - 1; i >= 0; i--) {
-      let bala = this.coche.balas[i];
-      this.pickableObjets.forEach((zepelin, index) => {
-        if (bala.position.distanceTo(zepelin.position) < 1) { // Ajusta según la escala y el tamaño
-          this.remove(zepelin);
-          this.pickableObjets.splice(index, 1); // Elimina el zepelin de la lista
-          this.coche.remove(bala); // Elimina la bala del coche
-          this.coche.balas.splice(i, 1); // Elimina la bala de la lista de balas
-        }
-      });
-    }
-  }
-
   removeZepelin(zepelin) {
     // Encuentra y elimina el zepelín de la lista de objetos seleccionables
     const index = this.pickableObjets.indexOf(zepelin);
-    console.log(index);
     if (index !== -1) {
       this.pickableObjets.splice(index, 1); // Elimina el zepelín de la lista
     }
@@ -374,13 +345,15 @@ class MyScene extends THREE.Scene {
       console.log("vuelta completada");
     }
 
-    // this.checkCollisions();
-
     if (this.pickableObjets.length > 0) {
       for (var i = 0; i < this.pickableObjets.length; i++) {
         this.pickableObjets[i].update();
       }
     }
+
+    // Control de puntos
+    this.updatePuntosInterfaz();
+    this.updateVelocidadInterfaz();
 
     this.renderer.render(this, this.getCamera());
     requestAnimationFrame(() => this.update())
@@ -419,6 +392,7 @@ $(function () {
       var obj = pickedObjects[0].object;
       if (obj.userData instanceof Zepelin) {
         console.log("Pick en zepelin");
+        scene.updatePuntos(obj.userData.getPuntos());
         scene.removeZepelin(obj.userData);
       }
     }

@@ -75,8 +75,6 @@ class Zepelin extends THREE.Object3D {
     this.radio = tubeGeo.parameters.radius;
     this.segmentos = tubeGeo.parameters.tubularSegments;
 
-    
-
     this.nodoPosOrientTubo = new THREE.Object3D();
     this.nodoPosOrientTubo.add(this.nodoRotacion);
     this.add(this.nodoPosOrientTubo);
@@ -89,6 +87,9 @@ class Zepelin extends THREE.Object3D {
     this.direccion = 1;
     this.recorrido = 2.5;
     this.velocidad = 0.005;
+
+    // Puntos zepelin
+    this.puntos = 10;
   }
 
   createGlobo(){
@@ -161,6 +162,10 @@ class Zepelin extends THREE.Object3D {
     flap.rotateY(-Math.PI/2);
     return flap;
   }
+
+  getPuntos(){
+    return this.puntos;
+  }
   
   update () {
 
@@ -174,15 +179,17 @@ class Zepelin extends THREE.Object3D {
     this.nodoPosOrientTubo.up = this.tubo.binormals[segmentoActual];
     this.nodoPosOrientTubo.lookAt (posTmp);
 
-    // if (this.movimiento)
-    //   this.position.x += this.velocidad * this.direccion;
+    if (this.movimiento)
+      this.nodoRaizZepelin.x += this.velocidad * this.direccion;
 
-    // // Comprobar si el zepelín alcanza el límite máximo en cualquier dirección
-    // if (Math.abs(this.position.x) >= this.recorrido) {
-    //     this.direccion *= -1;
-    //     this.rotateY(Math.PI);
-    // }
+    // Comprobar si el zepelín alcanza el límite máximo en cualquier dirección
+    if (Math.abs(this.nodoRaizZepelin.x) >= this.recorrido) {
+        this.direccion *= -1;
+        this.rotateY(Math.PI);
+    }
   }
+
+  
 }
 
 export { Zepelin };
