@@ -290,7 +290,7 @@ class MyScene extends THREE.Scene {
 
       for (var j = 0; j < this.parte1.length; j++) {
         if (this.coche.getCaja().intersectsBox(this.parte1[j].getCaja())) {
-          console.log("ha chocado con ", this.parte1[j]);
+          this.updatePuntos(this.parte1[j].getPuntos());
           var borrar = this.parte1[j];
           this.parte1.splice(j, 1);
           this.remove(borrar);
@@ -300,7 +300,7 @@ class MyScene extends THREE.Scene {
 
       for (var j = 0; j < this.parte2.length; j++) {
         if (this.coche.getCaja().intersectsBox(this.parte2[j].getCaja())) {
-          console.log("ha chocado con ", this.parte2[j]);
+          this.updatePuntos(this.parte2[j].getPuntos());
           var borrar = this.parte2[j];
           this.parte2.splice(j, 1);
           this.remove(borrar);
@@ -310,7 +310,7 @@ class MyScene extends THREE.Scene {
 
       for (var j = 0; j < this.parte3.length; j++) {
         if (this.coche.getCaja().intersectsBox(this.parte3[j].getCaja())) {
-          console.log("ha chocado con ", this.parte3[j]);
+          this.updatePuntos(this.parte3[j].getPuntos());
           var borrar = this.parte3[j];
           this.parte3.splice(j, 1);
           this.remove(borrar);
@@ -320,7 +320,7 @@ class MyScene extends THREE.Scene {
 
       for (var j = 0; j < this.parte4.length; j++) {
         if (this.coche.getCaja().intersectsBox(this.parte4[j].getCaja())) {
-          console.log("ha chocado con ", this.parte4[j]);
+          this.updatePuntos(this.parte4[j].getPuntos());
           var borrar = this.parte4[j];
           this.parte4.splice(j, 1);
           this.remove(borrar);
@@ -331,7 +331,7 @@ class MyScene extends THREE.Scene {
 
       for (var j = 0; j < this.parte5.length; j++) {
         if (this.coche.getCaja().intersectsBox(this.parte5[j].getCaja())) {
-          console.log("ha chocado con ", this.parte5[j]);
+          this.updatePuntos(this.parte5[j].getPuntos());
           var borrar = this.parte5[j];
           this.parte5.splice(j, 1);
           this.remove(borrar);
