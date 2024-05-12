@@ -7,12 +7,11 @@ class Tronco extends THREE.Object3D {
   constructor(tubeGeo, t) {
     super();
     this.ti = t;
-    //this.add(valla);
+    
+    this.puntos = -5;
 
     this.nodoRaiz = new THREE.Object3D();
     this.nodoRaiz.add(this.createTronco());
-
-    //this.add(this.nodoRaiz);
 
     this.tubo = tubeGeo;
     this.path = tubeGeo.parameters.path; 
@@ -113,6 +112,10 @@ class Tronco extends THREE.Object3D {
 
   getCaja(){
     return this.cajaFigura;
+  }
+
+  getPuntos(){
+    return this.puntos;
   }
 }
 
