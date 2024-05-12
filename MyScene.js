@@ -354,6 +354,7 @@ class MyScene extends THREE.Scene {
       this.coche.vueltaCompletada();
     }
 
+    // Actualizar zepelins
     if (this.pickableObjets.length > 0) {
       for (var i = 0; i < this.pickableObjets.length; i++) {
         this.pickableObjets[i].update();
