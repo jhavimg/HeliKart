@@ -104,12 +104,17 @@ class MyScene extends THREE.Scene {
     this.puntos += puntos;
   }
 
+  updateVelocidad(velocidad){
+    this.velocidad = velocidad;
+  }
+
   updatePuntosInterfaz() {
     document.getElementById('puntos').innerText = 'Puntos: ' + this.puntos;
   }
 
   updateVelocidadInterfaz() {
-    document.getElementById('velocidad').innerText = 'Velocidad: ' + this.velocidad + ' km/h';
+    var velocidad = this.velocidad * 1000;
+    document.getElementById('velocidad').innerText = 'Velocidad: ' + velocidad + ' km/h';
   }
 
   initStats() {
@@ -353,6 +358,8 @@ class MyScene extends THREE.Scene {
     }
 
     // Control de puntos
+    this.updateVelocidad(this.coche.getVelocidad());
+
     this.updatePuntosInterfaz();
     this.updateVelocidadInterfaz();
 
