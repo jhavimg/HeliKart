@@ -4,9 +4,40 @@ import {CSG} from '../libs/CSG-v2.js';
 const PUNTOS = -3;
 
 class Tronco extends THREE.Object3D {
-  constructor(gui,titleGui) {
+  constructor(tubeGeo, t) {
     super();
+    this.ti = t;
+    //this.add(valla);
 
+    this.nodoRaiz = new THREE.Object3D();
+    this.nodoRaiz.add(this.createTronco());
+
+    //this.add(this.nodoRaiz);
+
+    this.tubo = tubeGeo;
+    this.path = tubeGeo.parameters.path; 
+    this.radio = tubeGeo.parameters.radius;
+    this.segmentos = tubeGeo.parameters.tubularSegments;
+
+    //Nodo rotacion
+    this.nodoRotacion = new THREE.Object3D();
+    this.nodoRotacion.add(this.nodoRaiz);
+
+    // Inicialización de nodoPosOrientTubo
+    this.nodoPosOrientTubo = new THREE.Object3D();
+    this.nodoPosOrientTubo.add(this.nodoRotacion);
+    this.add(this.nodoPosOrientTubo);
+
+    this.nodoRaiz.scale.set(0.25 , 0.25 , 0.25);
+    this.nodoRaiz.position.y = this.radio + 0.25 * 0.25 + 0.05;
+    
+    this.cajaFigura = new THREE. Box3 ( ) ;
+    this.cajaFigura.setFromObject ( this.nodoRaiz ) ;
+    this.cajaVisible = new THREE.Box3Helper( this.cajaFigura , 0xCF00 ) ;
+    this.add ( this.cajaVisible ) ;
+  }
+
+  createTronco(){
     var loader = new THREE.TextureLoader();
     var textura = loader.load('./img/tronco.png');
     textura.wrapS = THREE.RepeatWrapping;
@@ -63,74 +94,19 @@ class Tronco extends THREE.Object3D {
     pincho.rotateX(-Math.PI);
     tronco_csg.union([pinchoMesh]);
 
-    var tronco = tronco_csg.toMesh();
-    this.nodoRaiz = new THREE.Object3D();
-    this.nodoRaiz.add(tronco);
-
-    this.add(this.nodoRaiz);
-    
-    this.cajaFigura = new THREE. Box3 ( ) ;
-    this.cajaFigura.setFromObject ( this.nodoRaiz ) ;
-    this.cajaVisible = new THREE.Box3Helper( this.cajaFigura , 0xCF00 ) ;
-    this.add ( this.cajaVisible ) ;
-  }
-  
-  createGUI (gui,titleGui) {
-    // Controles para el tamaño, la orientación y la posición de la caja
-    this.guiControls = {
-      sizeX : 1.0,
-      sizeY : 1.0,
-      sizeZ : 1.0,
-      
-      rotX : 0.0,
-      rotY : 0.0,
-      rotZ : 0.0,
-      
-      posX : 0.0,
-      posY : 0.0,
-      posZ : 0.0,
-      
-      // Un botón para dejarlo todo en su posición inicial
-      // Cuando se pulse se ejecutará esta función.
-      reset : () => {
-        this.guiControls.sizeX = 1.0;
-        this.guiControls.sizeY = 1.0;
-        this.guiControls.sizeZ = 1.0;
-        
-        this.guiControls.rotX = 0.0;
-        this.guiControls.rotY = 0.0;
-        this.guiControls.rotZ = 0.0;
-        
-        this.guiControls.posX = 0.0;
-        this.guiControls.posY = 0.0;
-        this.guiControls.posZ = 0.0;
-      }
-    } 
-    
-    // Se crea una sección para los controles de la caja
-    var folder = gui.addFolder (titleGui);
-    // Estas lineas son las que añaden los componentes de la interfaz
-    // Las tres cifras indican un valor mínimo, un máximo y el incremento
-    // El método   listen()   permite que si se cambia el valor de la variable en código, el deslizador de la interfaz se actualice
-    folder.add (this.guiControls, 'sizeX', 0.1, 5.0, 0.01).name ('Tamaño X : ').listen();
-    folder.add (this.guiControls, 'sizeY', 0.1, 5.0, 0.01).name ('Tamaño Y : ').listen();
-    folder.add (this.guiControls, 'sizeZ', 0.1, 5.0, 0.01).name ('Tamaño Z : ').listen();
-    
-    folder.add (this.guiControls, 'rotX', 0.0, Math.PI/2, 0.01).name ('Rotación X : ').listen();
-    folder.add (this.guiControls, 'rotY', 0.0, Math.PI/2, 0.01).name ('Rotación Y : ').listen();
-    folder.add (this.guiControls, 'rotZ', 0.0, Math.PI/2, 0.01).name ('Rotación Z : ').listen();
-    
-    folder.add (this.guiControls, 'posX', -20.0, 20.0, 0.01).name ('Posición X : ').listen();
-    folder.add (this.guiControls, 'posY', 0.0, 10.0, 0.01).name ('Posición Y : ').listen();
-    folder.add (this.guiControls, 'posZ', -20.0, 20.0, 0.01).name ('Posición Z : ').listen();
-    
-    folder.add (this.guiControls, 'reset').name ('[ Reset ]');
+    return tronco_csg.toMesh();
   }
   
   update () {
-    // this.position.set (this.guiControls.posX,this.guiControls.posY,this.guiControls.posZ);
-    // this.rotation.set (this.guiControls.rotX,this.guiControls.rotY,this.guiControls.rotZ);
-    // this.scale.set (this.guiControls.sizeX,this.guiControls.sizeY,this.guiControls.sizeZ);
+    var posTmp = this.path.getPointAt(this.ti);
+    this.nodoPosOrientTubo.position.copy (posTmp);
+    var tangente = this.path.getTangentAt(this.ti);
+    posTmp.add (tangente);
+    var segmentoActual = Math.floor(this.ti * this.segmentos);
+
+    this.nodoPosOrientTubo.up = this.tubo.binormals[segmentoActual];
+    this.nodoPosOrientTubo.lookAt (posTmp);
+
     this.cajaFigura.setFromObject ( this.nodoRaiz ) ;
     this.cajaVisible = new THREE.Box3Helper( this.cajaFigura , 0xCF00 ) ;
   }

@@ -77,8 +77,13 @@ class MyScene extends THREE.Scene {
     this.parte5 = [];
 
     //Añadir aqui lo objetos (cuidado con la posicion y el vector donde se introduce) 
-    this.parte1.push(new Valla(this.circuito.tubeGeometry, 0.05));
-    this.parte1.push(new PowerUp(this.circuito.tubeGeometry, 0.1));
+    this.parte1.push(new Valla(this.circuito.tubeGeometry , 0.05));
+    this.parte1.push(new Tronco(this.circuito.tubeGeometry , 0.1)); 
+    this.parte2.push(new Boost(this.circuito.tubeGeometry , 0.21)); 
+    this.parte3.push(new Tronco(this.circuito.tubeGeometry , 0.41)); 
+    this.parte4.push(new Valla(this.circuito.tubeGeometry , 0.61)); 
+    this.parte5.push(new PowerUp(this.circuito.tubeGeometry , 0.81)); 
+
 
     this.vectorCircuito.push(this.parte1);
     this.vectorCircuito.push(this.parte2);
@@ -275,12 +280,18 @@ class MyScene extends THREE.Scene {
 
     //this.coche.update();
 
-    for (var i = 0; i < this.parte1.length; i++) {
+    /* for (var i = 0; i < this.parte1.length; i++) {
       this.parte1[i].update();
+    } */
+    for (var i = 0; i < this.vectorCircuito.length; i++) {
+      var vector = this.vectorCircuito[i];
+      for(var j = 0; j < vector.length; j++){
+        vector[j].update();
+      }
     }
 
     var posicionCoche = this.coche.getTi();
-    if (posicionCoche >= 0 || posicionCoche < 0.25) {
+    if(posicionCoche >= 0 || posicionCoche < 0.25){
 
       for (var j = 0; j < this.parte1.length; j++) {
         if (this.coche.getCaja().intersectsBox(this.parte1[j].getCaja())) {
@@ -290,13 +301,44 @@ class MyScene extends THREE.Scene {
           this.remove(borrar);
         }
       }
-    }else if (posicionCoche >= 0 || posicionCoche < 0.25) {
+    }else if(posicionCoche >= 0.2 && posicionCoche < 0.4){
+      //console.log("estoy");
+      for (var j = 0; j < this.parte2.length; j++) {
+        if(this.coche.getCaja().intersectsBox(this.parte2[j].getCaja())){
+          console.log("ha chocado con " , this.parte2[j]);
+          var borrar = this.parte2[j];
+          this.parte2.splice(j , 1);
+          this.remove(borrar);
+        }
+      }
+    }else if(posicionCoche >= 0.4 && posicionCoche < 0.6){
 
-      for (var j = 0; j < this.parte1.length; j++) {
-        if (this.coche.getCaja().intersectsBox(this.parte1[j].getCaja())) {
-          console.log("ha chocado con ", this.parte1[j]);
-          var borrar = this.parte1[j];
-          this.parte1.splice(j, 1);
+      for (var j = 0; j < this.parte3.length; j++) {
+        if(this.coche.getCaja().intersectsBox(this.parte3[j].getCaja())){
+          console.log("ha chocado con " , this.parte3[j]);
+          var borrar = this.parte3[j];
+          this.parte3.splice(j , 1);
+          this.remove(borrar);
+        }
+      }
+    }else if(posicionCoche >= 0.6 && posicionCoche < 0.8){
+
+      for (var j = 0; j < this.parte4.length; j++) {
+        if(this.coche.getCaja().intersectsBox(this.parte4[j].getCaja())){
+          console.log("ha chocado con " , this.parte4[j]);
+          var borrar = this.parte4[j];
+          this.parte4.splice(j , 1);
+          this.remove(borrar);
+        }
+      }
+    }
+    else if(posicionCoche >= 0.8 && posicionCoche < 1){
+
+      for (var j = 0; j < this.parte5.length; j++) {
+        if(this.coche.getCaja().intersectsBox(this.parte5[j].getCaja())){
+          console.log("ha chocado con " , this.parte5[j]);
+          var borrar = this.parte5[j];
+          this.parte5.splice(j , 1);
           this.remove(borrar);
         }
       }
@@ -304,17 +346,6 @@ class MyScene extends THREE.Scene {
 
     // Animaciones coche
     this.coche.update();
-    if (this.pickableObjets.length > 0 && this.pickableObjets[0] instanceof Zepelin)
-      this.pickableObjets[0].update();
-    TWEEN.update();
-
-    // Picking
-    this.checkCollisions();
-
-    // Sistema de puntos y velocidad
-    this.updateScore();
-    let speed = this.calculateSpeed();
-    this.updateSpeed(speed);
 
     this.renderer.render(this, this.getCamera());
     requestAnimationFrame(() => this.update())
