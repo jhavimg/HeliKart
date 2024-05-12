@@ -372,6 +372,7 @@ class MyScene extends THREE.Scene {
     this.coche.update();
     if (this.coche.getTi() < posicionCoche) {
       console.log("vuelta completada");
+      this.coche.vueltaCompletada();
     }
 
     // this.checkCollisions();
