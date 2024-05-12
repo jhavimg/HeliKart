@@ -11,7 +11,7 @@ class Coche extends THREE.Object3D {
     this.relojElice = new THREE. Clock ( ) ;
     this.velocidadElice = 3 * Math.PI ;
     this.relojMovimientoCoche = new THREE.Clock();
-    this.t = 0.07;
+    this.t = 0;
     //this.relojGiro = new THREE.Clock();
 
     //velocidad de movimiento de las animaciones///////////
@@ -551,7 +551,7 @@ class Coche extends THREE.Object3D {
   giro(direccion){
     var segundosTranscurridos = this.relojMovimientoCoche.getDelta ( ); 
     var esp_ang = this.velocidadGiro * segundosTranscurridos ;
-    console.log(segundosTranscurridos);
+    console.log(esp_ang);
     if(direccion == 'izquierda'){
       this.nodoRotacion.rotateZ(-esp_ang);
     }else if(direccion == 'derecha'){
@@ -585,7 +585,7 @@ class Coche extends THREE.Object3D {
     // Posicionamiento en tubo
     this.t += this.relojMovimientoCoche.getDelta() * this.velocidadCoche;
     this.ti = this.t % 1;
-    //this.ti = 0.09;
+    //this.ti = 0.095;
     var posTmp = this.path.getPointAt(this.ti);
     this.nodoPosOrientTubo.position.copy (posTmp);
     var tangente = this.path.getTangentAt(this.ti);
