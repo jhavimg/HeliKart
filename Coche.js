@@ -476,6 +476,7 @@ class Coche extends THREE.Object3D {
   doSalto(salto){
     this.relojSalto = new THREE.Clock();
     this.hacerSalto = salto;
+    //this.salto();
     this.relojBrazo = new THREE.Clock();
     this.subir = salto;
   }
@@ -497,21 +498,22 @@ class Coche extends THREE.Object3D {
   }
 
   salto(){
+    console.log("hello");
     this.hacerSalto = false;
     // Definimos la altura final y el tiempo de animación
-    var alturaInicial = this.nodoRaizCoche.position.y;
-    var alturaFinal = this.nodoRaizCoche.position.y + 3;
-    var duracionAnimacion = 3000;
+    var alturaInicial = this.radio + 0.15;
+    var alturaFinal = this.radio + 0.15 + 3;
+    var duracionAnimacion = 1000;
 
     // Animacion subir arriba del salto
     var tweenSaltoArriba = new TWEEN.Tween(this.nodoRaizCoche.position)
       .to({ y: alturaFinal }, duracionAnimacion)
-      .easing(TWEEN.Easing.Quadratic.InOut);
+      .easing(TWEEN.Easing.Quadratic.Out);
     
     // Animación volver a abajo
     var tweenSaltAbajo = new TWEEN.Tween(this.nodoRaizCoche.position)
       .to({ y: alturaInicial}, duracionAnimacion)
-      .easing(TWEEN.Easing.Quadratic.InOut);
+      .easing(TWEEN.Easing.Quadratic.In);
 
     tweenSaltoArriba.chain(tweenSaltAbajo);
     tweenSaltoArriba.start();
@@ -601,13 +603,13 @@ class Coche extends THREE.Object3D {
     if(this.hacerSalto){
       this.salto();
     }
+
     if(this.subir){
       this.volar();
     }
 
     if(this.cochedetinido){
       this.nodoRaizCoche.position.set(-1 , 0 , 0);
-
     }
 
     // Movimiento hélices
@@ -618,6 +620,7 @@ class Coche extends THREE.Object3D {
     // Animación para movimiento por el tubo
     this.t += this.relojMovimientoCoche.getDelta() * this.velocidadCoche;
     this.ti = this.t % 1;
+    //this.ti = 0;
     var posTmp = this.path.getPointAt(this.ti);
     this.nodoPosOrientTubo.position.copy (posTmp);
     var tangente = this.path.getTangentAt(this.ti);
@@ -649,6 +652,10 @@ class Coche extends THREE.Object3D {
     return this.velocidadCoche;
   }
 
+  setLight(luz){
+    this.luz = luz;
+    this.nodoRaizCoche.add(luz);
+  }
 
 }
 

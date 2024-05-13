@@ -26,6 +26,7 @@ class MyScene extends THREE.Scene {
     this.initStats();
     this.createLights();
     this.createCamera();
+    this.background = new THREE.Color(0x2fcbf1);
 
     // Default to normal camera
     this.currentCamera = 'normal';
@@ -37,6 +38,9 @@ class MyScene extends THREE.Scene {
     //Se crea el personaje
     this.coche = new Coche(this.circuito.tubeGeometry, this.gui, "coche");
     this.add(this.coche);
+    this.createLuz1(this.coche);
+    this.createLuz2(this.coche);
+    this.createLuz3(this.coche);
 
     // Camara subjetiva
     this.createCameraSubjetiva(this.coche);
@@ -71,6 +75,85 @@ class MyScene extends THREE.Scene {
     this.velocidad = 0;
     this.vueltas = 0;
     this.createInfoPanel();
+  }
+
+  createLuz1(coche){
+    this.pointLight1 = new THREE.PointLight( 0xffffff );
+    this.pointLight1.power = 500;
+    this.pointLight1.position.set( 0, 5, 0 );
+    coche.setLight(this.pointLight1);
+  }
+
+  createLuz2(coche){
+    this.pointLight2 = new THREE.PointLight( 0xff0000 );
+    this.pointLight2.power = 0;
+    this.pointLight2.position.set( 0, 5, 0 );
+    coche.setLight(this.pointLight2);
+  }
+
+  createLuz3(coche){
+    this.pointLight3 = new THREE.PointLight( 0x00ff00 );
+    this.pointLight3.power = 0;
+    this.pointLight3.position.set( 0, 5, 0 );
+    coche.setLight(this.pointLight3);
+  }
+
+  lucesMalas() {
+    var tiempo1 = 400;
+    var tiempo2 = 600; // Ajuste para que comience después del primero
+    var tiempo3 = 1000; // Ajuste para que comience después del segundo
+    var self = this; // Guardamos una referencia al contexto exterior
+
+    this.pointLight1.power = 0;
+    this.pointLight2.power = 1000;
+    this.pointLight3.power = 0;
+
+    setTimeout(function () {
+      // Usamos self en lugar de this
+      self.pointLight1.power = 500;
+      self.pointLight2.power = 0;
+    }.bind(this), tiempo1); // Usamos bind para mantener el contexto exterior
+
+    setTimeout(function () {
+      // Usamos self en lugar de this
+      self.pointLight1.power = 0;
+      self.pointLight2.power = 1000;
+    }.bind(this), tiempo2);
+
+    setTimeout(function () {
+      // Usamos self en lugar de this
+      self.pointLight1.power = 500;
+      self.pointLight2.power = 0;
+    }.bind(this), tiempo3);
+  }
+  
+  lucesBuenas() {
+    var tiempo1 = 400;
+    var tiempo2 = 600; // Ajuste para que comience después del primero
+    var tiempo3 = 1000;
+    var self = this; // Guardamos una referencia al contexto exterior
+  
+    this.pointLight1.power = 0;
+    this.pointLight2.power = 0;
+    this.pointLight3.power = 1000;
+  
+    setTimeout(function() {
+      // Usamos self en lugar de this
+      self.pointLight1.power = 500;
+      self.pointLight3.power = 0;
+    }.bind(this), tiempo1); // Usamos bind para mantener el contexto exterior
+
+    setTimeout(function() {
+      // Usamos self en lugar de this
+      self.pointLight1.power = 0;
+      self.pointLight3.power = 1000;
+    }.bind(this), tiempo2);
+
+    setTimeout(function() {
+      // Usamos self en lugar de this
+      self.pointLight1.power = 500;
+      self.pointLight3.power = 0;
+    }.bind(this), tiempo3);
   }
 
   createObjetos() {
@@ -332,10 +415,20 @@ class MyScene extends THREE.Scene {
     this.remove(zepelin);
   }
 
+  checkColision(objeto){
+    if((objeto instanceof Valla) || (objeto instanceof Tronco) ){
+      this.lucesMalas();
+    }else{
+      this.lucesBuenas();
+    }
+  }
+
   update() {
 
     if (this.stats) this.stats.update();
     this.cameraControl.update();
+
+    TWEEN.update();
 
     //this.coche.update();
 
@@ -355,6 +448,7 @@ class MyScene extends THREE.Scene {
       for (var j = 0; j < this.parte1.length; j++) {
         if (this.coche.getCaja().intersectsBox(this.parte1[j].getCaja())) {
           this.updatePuntos(this.parte1[j].getPuntos());
+          this.checkColision(this.parte1[j]);
           var borrar = this.parte1[j];
           this.parte1.splice(j, 1);
           this.remove(borrar);
@@ -365,6 +459,7 @@ class MyScene extends THREE.Scene {
       for (var j = 0; j < this.parte2.length; j++) {
         if (this.coche.getCaja().intersectsBox(this.parte2[j].getCaja())) {
           this.updatePuntos(this.parte2[j].getPuntos());
+          this.checkColision(this.parte2[j]);
           var borrar = this.parte2[j];
           this.parte2.splice(j, 1);
           this.remove(borrar);
@@ -375,6 +470,7 @@ class MyScene extends THREE.Scene {
       for (var j = 0; j < this.parte3.length; j++) {
         if (this.coche.getCaja().intersectsBox(this.parte3[j].getCaja())) {
           this.updatePuntos(this.parte3[j].getPuntos());
+          this.checkColision(this.parte3[j]);
           var borrar = this.parte3[j];
           this.parte3.splice(j, 1);
           this.remove(borrar);
@@ -385,6 +481,7 @@ class MyScene extends THREE.Scene {
       for (var j = 0; j < this.parte4.length; j++) {
         if (this.coche.getCaja().intersectsBox(this.parte4[j].getCaja())) {
           this.updatePuntos(this.parte4[j].getPuntos());
+          this.checkColision(this.parte4[j]);
           var borrar = this.parte4[j];
           this.parte4.splice(j, 1);
           this.remove(borrar);
@@ -396,6 +493,7 @@ class MyScene extends THREE.Scene {
       for (var j = 0; j < this.parte5.length; j++) {
         if (this.coche.getCaja().intersectsBox(this.parte5[j].getCaja())) {
           this.updatePuntos(this.parte5[j].getPuntos());
+          this.checkColision(this.parte5[j]);
           var borrar = this.parte5[j];
           this.parte5.splice(j, 1);
           this.remove(borrar);
@@ -409,6 +507,7 @@ class MyScene extends THREE.Scene {
       console.log("vuelta completada");
       this.coche.vueltaCompletada();
       this.vueltas++;
+      this.lucesBuenas();
     }
 
     // Actualizar zepelins
@@ -466,6 +565,7 @@ $(function () {
       var obj = pickedObjects[0].object;
       if (obj.userData instanceof Zepelin) {
         console.log("Pick en zepelin");
+        scene.lucesBuenas();
         scene.updatePuntos(obj.userData.getPuntos());
         scene.removeZepelin(obj.userData);
       }
