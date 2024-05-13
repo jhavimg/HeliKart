@@ -39,12 +39,26 @@ class Circuito extends THREE.Object3D {
 
         this.tubeGeometry = new THREE.TubeGeometry(curve, segments, radius, segments, true);
 
-        const material = new THREE.MeshLambertMaterial({ color: 0xff00ff });
+        // Cargador de texturas
+        const self = this; 
 
-        const tubeMesh = new THREE.Mesh(this.tubeGeometry, material);
+        const loader = new THREE.TextureLoader();
+        loader.load('./img/textura_circuito3.jpg', function(texture) {
+            
+            texture.wrapS = THREE.RepeatWrapping;
+            texture.wrapT = THREE.RepeatWrapping;
+            texture.repeat.set(50, 2);
+
+            const material = new THREE.MeshPhongMaterial({ map: texture });
+            const tubeMesh = new THREE.Mesh(self.tubeGeometry, material);
+            self.add(tubeMesh);  // Añadir el mesh a la instancia correcta de Circuito
+        });
+
+        // this.material = new THREE.MeshLambertMaterial({ color: 0xff00ff });
+        // const tubeMesh = new THREE.Mesh(this.tubeGeometry, this.material);
 
         this.curve = curve;
-        this.add(tubeMesh);
+        // this.add(tubeMesh);
 
     }
 

@@ -165,7 +165,7 @@ class MyScene extends THREE.Scene {
     this.parte5 = [];
 
     //Añadir aqui lo objetos (cuidado con la posicion y el vector donde se introduce) 
-    this.parte1.push(new Valla(this.circuito.tubeGeometry, 0.05 , Math.PI/6));
+    this.parte1.push(new Valla(this.circuito.tubeGeometry, 0.01 , Math.PI/6));
     this.parte1.push(new Tronco(this.circuito.tubeGeometry, 0.1 , 0));
     this.parte2.push(new Boost(this.circuito.tubeGeometry, 0.21 , 0));
     this.parte3.push(new Tronco(this.circuito.tubeGeometry, 0.41 , 0));
@@ -230,6 +230,8 @@ class MyScene extends THREE.Scene {
   // Panel para mostrar datos del final de la partida
   finPartida(){
     if(this.vueltas == 5){
+      this.coche.deternerCoche();
+
       var panelFinal = document.getElementById('panelFinal');
       panelFinal.style.display = 'flex';
       panelFinal.style.boxShadow = ' 0px 0px 20px black';
@@ -291,11 +293,10 @@ class MyScene extends THREE.Scene {
   }
 
   createCameraSubjetiva(coche) {
-    // Camara subjetiva
-    var camaraSubjetiva = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 50);
+    var camaraSubjetiva = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 200);
     coche.setCamaraSubjetiva(camaraSubjetiva);
 
-    camaraSubjetiva.position.set(15, 5, 0);
+    camaraSubjetiva.position.set(20, 12, 0);
 
     var puntoDeMiraRelativo = new THREE.Vector3(0, -10, 30);
 
@@ -424,9 +425,9 @@ class MyScene extends THREE.Scene {
   }
 
   update() {
-
     if (this.stats) this.stats.update();
     this.cameraControl.update();
+    TWEEN.update();
 
     TWEEN.update();
 
