@@ -66,9 +66,10 @@ class MyScene extends THREE.Scene {
     this.mouse = new THREE.Vector2();
     this.raycaster = new THREE.Raycaster();
 
-    // Panel
+    // Panel y sistema de puntos
     this.puntos = 0;
     this.velocidad = 0;
+    this.vueltas = 0;
     this.createInfoPanel();
   }
 
@@ -96,20 +97,37 @@ class MyScene extends THREE.Scene {
     this.vectorCircuito.push(this.parte5);
   }
 
+  // Panel para mostrar datos durante la partida
   createInfoPanel() {
     const puntos = document.getElementById('puntos');
     puntos.innerText = 'Puntos: 0';
 
     const velocidad = document.getElementById('velocidad');
     velocidad.innerText = 'Velocidad: 0 km/h';
+
+    const vueltas = document.getElementById('vueltas');
+    vueltas.innerText = 'Vueltas: 0';
   }
 
+  // Funciones para actualizar datos en la interfaz
   updatePuntos(puntos){
     this.puntos += puntos;
   }
 
   updateVelocidad(velocidad){
     this.velocidad = velocidad;
+  }
+
+  updateBarraProgreso(ti) {
+    let barraProgreso = document.getElementById('barraProgreso');
+    var progreso = ti * 100;
+
+    if (progreso == 0){
+      barraProgreso.style.transition = 'width 0.1s linear';
+    }
+
+    
+    barraProgreso.style.width = `${progreso}%`;
   }
 
   updatePuntosInterfaz() {
@@ -120,6 +138,42 @@ class MyScene extends THREE.Scene {
     var velocidad = this.velocidad * 1000;
     var numeroRedondeado = velocidad.toFixed(2);
     document.getElementById('velocidad').innerText = 'Velocidad: ' + numeroRedondeado + ' km/h';
+  }
+
+  updateVueltasInterfaz(){
+    document.getElementById('vueltas').innerText = 'Vueltas: ' + this.vueltas;
+  }
+
+  // Panel para mostrar datos del final de la partida
+  finPartida(){
+    if(this.vueltas == 5){
+      var panelFinal = document.getElementById('panelFinal');
+      panelFinal.style.display = 'flex';
+      panelFinal.style.boxShadow = ' 0px 0px 20px black';
+
+      var titulo = document.getElementById('titulo');
+      titulo.innerText = 'Fin de la partida';
+      var informacionPartida = document.getElementById('informacionPartida');
+
+      if(this.puntos > 0){
+        panelFinal.style.background = 'rgba(0, 255, 0, 0.5)';
+        var informacionPartida = document.getElementById('informacionPartida');
+        informacionPartida.innerText = 'Has ganado con ' + this.puntos + ' puntos';
+      }
+      else{
+        panelFinal.style.background = 'rgba(255, 0, 0, 0.5)';
+        informacionPartida.innerText = 'Has perdido con ' + this.puntos + ' puntos';
+      }
+
+      var infoPanel = document.getElementById('panel');
+      infoPanel.style.display = 'none';
+
+      var boton = document.getElementById('resetear');
+      boton.innerText = 'Otra partida';
+      boton.addEventListener('click', function() {
+        window.location.reload();
+      });
+    }
   }
 
   initStats() {
@@ -354,6 +408,7 @@ class MyScene extends THREE.Scene {
     if (this.coche.getTi() < posicionCoche) {
       console.log("vuelta completada");
       this.coche.vueltaCompletada();
+      this.vueltas++;
     }
 
     // Actualizar zepelins
@@ -368,6 +423,11 @@ class MyScene extends THREE.Scene {
 
     this.updatePuntosInterfaz();
     this.updateVelocidadInterfaz();
+    this.updateVueltasInterfaz();
+    this.updateBarraProgreso(this.coche.getTi());
+
+    // Fin de la partida
+    this.finPartida();
 
     this.renderer.render(this, this.getCamera());
     requestAnimationFrame(() => this.update())

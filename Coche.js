@@ -96,9 +96,9 @@ class Coche extends THREE.Object3D {
     this.nodoRaizCoche.position.y = this.radio + 0.15;
     this.add(this.nodoPosOrientTubo);
 
-    // Balas
+/*     // Balas
     this.balas = [];
-    this.nodoRaizCoche.add(this.balas);
+    this.nodoRaizCoche.add(this.balas); */
 
     // Hitbox
     this.cajaFigura = new THREE.Box3();
@@ -107,7 +107,7 @@ class Coche extends THREE.Object3D {
     this.add ( this.cajaVisible ) ;
   }
 
-  shoot(zepelin){
+/*   shoot(zepelin){
     // Disparo al zepelin
     const materialBala = new THREE.MeshStandardMaterial({ color: 0xff0000 });
     var geometriaBala = new THREE.SphereGeometry(0.1);
@@ -121,7 +121,7 @@ class Coche extends THREE.Object3D {
 
     this.balas.push(bala);
     this.add(bala);
-  }
+  } */
 
   setCamaraSubjetiva(camara){
     this.camara = camara;
@@ -558,7 +558,7 @@ class Coche extends THREE.Object3D {
         .to({ z: anguloFinal }, duracionAnimacion)
         .easing(TWEEN.Easing.Cubic.Out)
         .onComplete(() => {
-            this.shoot(zepelin);  // Dispara cuando la animación se completa
+            // this.shoot(zepelin);  // Dispara cuando la animación se completa
         });
 
     // Animación de cierre de la calandra
@@ -618,7 +618,6 @@ class Coche extends THREE.Object3D {
     // Animación para movimiento por el tubo
     this.t += this.relojMovimientoCoche.getDelta() * this.velocidadCoche;
     this.ti = this.t % 1;
-    //this.ti = 0.09;
     var posTmp = this.path.getPointAt(this.ti);
     this.nodoPosOrientTubo.position.copy (posTmp);
     var tangente = this.path.getTangentAt(this.ti);

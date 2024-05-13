@@ -27,6 +27,7 @@ class Zepelin extends THREE.Object3D {
   constructor(tubeGeo, t) {
     super();
     this.ti = t;
+    this.relojMovimientoZepelin = new THREE.Clock();
 
     this.nodoRaizZepelin = new THREE.Object3D();
 
@@ -86,7 +87,7 @@ class Zepelin extends THREE.Object3D {
     this.movimiento = true;
     this.direccion = 1;
     this.recorrido = 2.5;
-    this.velocidad = 0.005;
+    this.velocidadGiro = Math.PI * 0.05;
 
     // Puntos zepelin
     this.puntos = 10;
@@ -178,15 +179,12 @@ class Zepelin extends THREE.Object3D {
 
     this.nodoPosOrientTubo.up = this.tubo.binormals[segmentoActual];
     this.nodoPosOrientTubo.lookAt (posTmp);
+  
+    // Movimiento del zepelin
+    var segundosTranscurridos = this.relojMovimientoZepelin.getDelta ( ); 
+    var anguloMovimiento = this.velocidadGiro * segundosTranscurridos ;
+    this.nodoRotacion.rotateZ(-anguloMovimiento);
 
-    if (this.movimiento)
-      this.nodoRaizZepelin.x += this.velocidad * this.direccion;
-
-    // Comprobar si el zepelín alcanza el límite máximo en cualquier dirección
-    if (Math.abs(this.nodoRaizZepelin.x) >= this.recorrido) {
-        this.direccion *= -1;
-        this.rotateY(Math.PI);
-    }
   }
 
   
