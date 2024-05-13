@@ -600,13 +600,13 @@ class Coche extends THREE.Object3D {
       this.salto();
     }
 
-    if(this.subir){
     if (this.subir) {
       this.volar();
     }
 
     if(this.cochedetinido){
       this.nodoRaizCoche.position.set(-1 , 0 , 0);
+    }
     if (this.cochedetinido) {
       this.nodoRaizCoche.position.set(-1, 0, 0);
 
