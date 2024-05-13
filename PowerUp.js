@@ -2,7 +2,7 @@ import * as THREE from '../libs/three.module.js'
 import { CSG } from '../libs/CSG-v2.js'
  
 class PowerUp extends THREE.Object3D {
-  constructor(tubeGeo, t) {
+  constructor(tubeGeo, t , rot) {
     super();
 
     this.puntos = 5;
@@ -33,6 +33,7 @@ class PowerUp extends THREE.Object3D {
 
     this.nodoRaiz.scale.set(0.2 , 0.2 , 0.2);
     this.nodoRaiz.position.y = this.radio + 0.75 * 0.25;
+    this.nodoRotacion.rotateZ(rot);
     
     this.cajaFigura = new THREE. Box3 ( ) ;
     this.cajaFigura.setFromObject ( this.nodoRaiz ) ;

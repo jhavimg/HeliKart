@@ -82,12 +82,12 @@ class MyScene extends THREE.Scene {
     this.parte5 = [];
 
     //Añadir aqui lo objetos (cuidado con la posicion y el vector donde se introduce) 
-    this.parte1.push(new Valla(this.circuito.tubeGeometry, 0.05));
-    this.parte1.push(new Tronco(this.circuito.tubeGeometry, 0.1));
-    this.parte2.push(new Boost(this.circuito.tubeGeometry, 0.21));
-    this.parte3.push(new Tronco(this.circuito.tubeGeometry, 0.41));
-    this.parte4.push(new Valla(this.circuito.tubeGeometry, 0.61));
-    this.parte5.push(new PowerUp(this.circuito.tubeGeometry, 0.81));
+    this.parte1.push(new Valla(this.circuito.tubeGeometry, 0.05 , Math.PI/6));
+    this.parte1.push(new Tronco(this.circuito.tubeGeometry, 0.1 , 0));
+    this.parte2.push(new Boost(this.circuito.tubeGeometry, 0.21 , 0));
+    this.parte3.push(new Tronco(this.circuito.tubeGeometry, 0.41 , 0));
+    this.parte4.push(new Valla(this.circuito.tubeGeometry, 0.61 , 0));
+    this.parte5.push(new PowerUp(this.circuito.tubeGeometry, 0.81 , 0));
 
 
     this.vectorCircuito.push(this.parte1);

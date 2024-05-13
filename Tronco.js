@@ -4,7 +4,7 @@ import {CSG} from '../libs/CSG-v2.js';
 const PUNTOS = -3;
 
 class Tronco extends THREE.Object3D {
-  constructor(tubeGeo, t) {
+  constructor(tubeGeo, t , rot) {
     super();
     this.ti = t;
     
@@ -29,6 +29,7 @@ class Tronco extends THREE.Object3D {
 
     this.nodoRaiz.scale.set(0.25 , 0.25 , 0.25);
     this.nodoRaiz.position.y = this.radio + 0.25 * 0.25 + 0.05;
+    this.nodoRotacion.rotateZ(rot);
     
     this.cajaFigura = new THREE. Box3 ( ) ;
     this.cajaFigura.setFromObject ( this.nodoRaiz ) ;

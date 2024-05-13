@@ -2,7 +2,7 @@ import * as THREE from '../libs/three.module.js'
 import { CSG } from '../libs/CSG-v2.js'
 
 class Boost extends THREE.Object3D {
-  constructor(tubeGeo, t) {
+  constructor(tubeGeo, t , rot) {
     super();
     this.ti = t;
 
@@ -30,6 +30,7 @@ class Boost extends THREE.Object3D {
 
     this.nodoRaiz.scale.set(0.15, 0.15, 0.15);
     this.nodoRaiz.position.y = this.radio + 0.2;
+    this.nodoRotacion.rotateZ(rot);
 
     this.cajaFigura = new THREE.Box3();
     this.cajaFigura.setFromObject(this.nodoRaiz);
