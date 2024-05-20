@@ -41,9 +41,21 @@ class Boost extends THREE.Object3D {
 
   createBoost(){
     var material = new THREE.MeshStandardMaterial({
-      color: 0x3C4DF5,
+      color: 0xCFCFCF,
       metalness: 0.6,
       roughness: 0,
+    });
+
+    var material2 = new THREE.MeshStandardMaterial({
+      color: 0x110000,
+      metalness: 0.6,
+      roughness: 0,
+    });
+
+    var material3 = new THREE.MeshStandardMaterial({
+      color: 0x3C4DF5,
+      metalness: 0.6,
+      roughness: 1,
     });
 
     var cil = new THREE.CylinderGeometry(0.5, 0.5, 2);
@@ -59,7 +71,7 @@ class Boost extends THREE.Object3D {
 
     var cil2 = new THREE.CylinderGeometry(0.05, 0.05, 0.75);
     cil2.translate(0, 1.8, 0);
-    var cil2Mesh = new THREE.Mesh(cil2, material);
+    var cil2Mesh = new THREE.Mesh(cil2, material2);
 
     var cil3 = new THREE.CylinderGeometry(0.05, 0.05, 0.25);
     cil3.rotateZ(Math.PI / 2);
@@ -94,8 +106,10 @@ class Boost extends THREE.Object3D {
     rueGeo.translate(0, -0.1, 0);
     var rueMesh = new THREE.Mesh(rueGeo, material);
 
-    csg.union([rueMesh, cil3Mesh, valvulaMesh, cil2Mesh]);
-
+    //csg.union([rueMesh, cil3Mesh, valvulaMesh, cil2Mesh]);
+    var csg2 = new CSG();
+    csg2.union([rueMesh, cil3Mesh, valvulaMesh, cil2Mesh]);
+    
 
     var shape = new THREE.Shape();
     shape.moveTo(0.001, 5);
@@ -105,17 +119,22 @@ class Boost extends THREE.Object3D {
     var point = shape.extractPoints(7).shape;
     var propulsor = new THREE.LatheGeometry(point, 10);
 
+    var csg3 = new CSG();
     propulsor.translate(0.5, -6, 0);
-    var propulsorMesh = new THREE.Mesh(propulsor, material);
-    csg.union([propulsorMesh]);
+    var propulsorMesh = new THREE.Mesh(propulsor, material3);
+    csg3.union([propulsorMesh]);
     propulsor.rotateY(Math.PI / 2);
-    csg.union([propulsorMesh]);
+    csg3.union([propulsorMesh]);
     propulsor.rotateY(Math.PI / 2);
-    csg.union([propulsorMesh]);
+    csg3.union([propulsorMesh]);
     propulsor.rotateY(Math.PI / 2);
-    csg.union([propulsorMesh]);
+    csg3.union([propulsorMesh]);
 
-    return csg.toMesh();
+    var boostMesh = new THREE.Mesh();
+    boostMesh.add(csg.toMesh());
+    boostMesh.add(csg2.toMesh());
+    boostMesh.add(csg3.toMesh());
+    return boostMesh;
   }
 
   update() {

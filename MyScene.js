@@ -28,6 +28,10 @@ class MyScene extends THREE.Scene {
     this.createCamera();
     this.background = new THREE.Color(0x2fcbf1);
 
+    //Controles para el giro
+    this.girar = false;
+    this.direccionGiro = "";
+
     // Default to normal camera
     this.currentCamera = 'normal';
 
@@ -504,6 +508,11 @@ class MyScene extends THREE.Scene {
 
     // Animaciones coche
     this.coche.update();
+
+    if(this.girar){
+      this.coche.giro(this.direccionGiro);
+    }
+
     if (this.coche.getTi() < posicionCoche) {
       console.log("vuelta completada");
       this.coche.vueltaCompletada();
@@ -546,12 +555,23 @@ $(function () {
     } else if (event.key === 'w' || event.key === 'W') {
       scene.coche.doSalto(true);
     } else if (event.key === 'a' || event.key === 'A') {
-      scene.coche.hacerGiro("izquierda");
-      //scene.coche.giro("izquierda");
+      scene.girar = true;
+      scene.direccionGiro = "izquierda";
     }
     else if (event.key === 'd' || event.key === 'D') {
-      scene.coche.hacerGiro("derecha");
-      //scene.coche.giro("derecha");
+      scene.girar = true;
+      scene.direccionGiro = "derecha";
+    }
+  });
+
+  window.addEventListener("keyup", (event) => {
+    if (event.key === 'a' || event.key === 'A') {
+      scene.girar = false;
+      scene.direccionGiro = "";
+    }
+    else if (event.key === 'd' || event.key === 'D') {
+      scene.girar = false;
+      scene.direccionGiro = "";
     }
   });
 

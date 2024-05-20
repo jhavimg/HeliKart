@@ -24,16 +24,8 @@ class Coche extends THREE.Object3D {
     this.velocidadCoche = 0.025;
     this.tiempoEspera = 0;
     this.tiempoEsperaMaximo = 2;
-    this.velocidadGiro = Math.PI * 2;
+    this.velocidadGiro = Math.PI * 20;
     //////////////////////////////////////////////////////
-
-    //Prueba de choques//////////////////////////////////////////////////
-    /* this.avanza = 0.1;
-    this.posIni = -2.5;
-    this.cochedetinido = false;
-    this.mantenerArriba = false; */
-    //////////////////////////////////////////////////////////////////////
-
 
     //Variables animación salto///////////////////////////////////////////////////////////////////////////////
     this.tituloGui = titleGui
