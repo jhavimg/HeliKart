@@ -14,17 +14,16 @@ class Coche extends THREE.Object3D {
     this.velocidadElice = 3 * Math.PI;
     this.relojMovimientoCoche = new THREE.Clock();
     this.t = 0;
-    this.puntos = 0;
     //this.relojGiro = new THREE.Clock();
 
     //velocidad de movimiento de las animaciones///////////
     this.velocidadSalto = 1.5;
-    this.velocidadBrazo = 1;
+    this.velocidadBrazo = 3;
     this.velocidadCalandra = -10;
     this.velocidadCoche = 0.025;
     this.tiempoEspera = 0;
-    this.tiempoEsperaMaximo = 2;
-    this.velocidadGiro = Math.PI * 20;
+    this.tiempoEsperaMaximo = 0.5;
+    this.velocidadGiro = Math.PI * 40;
     //////////////////////////////////////////////////////
 
     //Variables animación salto///////////////////////////////////////////////////////////////////////////////
@@ -68,7 +67,7 @@ class Coche extends THREE.Object3D {
     this.nodoRaizCoche.rotateY(Math.PI / 2);
 
     this.nodoRaizCoche.scale.set(0.25, 0.25, 0.25); //Escalado del coche para ponerlo en el circuito
-    this.coche = new THREE.Object3D();
+    //this.coche = new THREE.Object3D();
 
     this.add(this.nodoRaizCoche);
 
@@ -481,12 +480,6 @@ class Coche extends THREE.Object3D {
   disparar(disparo) {
     this.relojCalandra = new THREE.Clock();
     this.abrir = disparo;
-  }
-
-  //funcion que saca la Y de la parabola -0.2x² + alturaMax
-  calcularY(x) {
-    var y = -0.2 * x * x + this.alturaMax;
-    return y;
   }
 
   salto() {

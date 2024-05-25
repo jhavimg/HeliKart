@@ -170,11 +170,25 @@ class MyScene extends THREE.Scene {
 
     //Añadir aqui lo objetos (cuidado con la posicion y el vector donde se introduce) 
     this.parte1.push(new Valla(this.circuito.tubeGeometry, 0.01 , Math.PI/6));
+    this.parte1.push(new Boost(this.circuito.tubeGeometry, 0.05 , -Math.PI));
     this.parte1.push(new Tronco(this.circuito.tubeGeometry, 0.1 , 0));
-    this.parte2.push(new Boost(this.circuito.tubeGeometry, 0.21 , 0));
-    this.parte3.push(new Tronco(this.circuito.tubeGeometry, 0.41 , 0));
-    this.parte4.push(new Valla(this.circuito.tubeGeometry, 0.61 , 0));
-    this.parte5.push(new PowerUp(this.circuito.tubeGeometry, 0.81 , 0));
+    this.parte1.push(new PowerUp(this.circuito.tubeGeometry, 0.15 , Math.PI/2));
+
+    this.parte2.push(new Boost(this.circuito.tubeGeometry, 0.2 , 0));
+    this.parte2.push(new PowerUp(this.circuito.tubeGeometry, 0.25 , -Math.PI/2));
+    this.parte2.push(new Tronco(this.circuito.tubeGeometry, 0.3 , Math.PI));
+
+    this.parte3.push(new Tronco(this.circuito.tubeGeometry, 0.42 , Math.PI/3));
+    this.parte3.push(new Valla(this.circuito.tubeGeometry, 0.45 , 2 * Math.PI / 5));
+    this.parte3.push(new PowerUp(this.circuito.tubeGeometry, 0.53 , Math.PI));
+    this.parte3.push(new Valla(this.circuito.tubeGeometry, 0.58 , 7 * Math.PI / 4));
+
+    this.parte4.push(new Valla(this.circuito.tubeGeometry, 0.673 , 2.814));
+    this.parte4.push(new PowerUp(this.circuito.tubeGeometry, 0.781 , 1.943));
+    this.parte4.push(new Valla(this.circuito.tubeGeometry, 0.75 , Math.PI/4));
+
+    this.parte5.push(new PowerUp(this.circuito.tubeGeometry, 0.84 , 8 * Math.PI/6));
+    this.parte5.push(new Tronco(this.circuito.tubeGeometry, 0.91 , 0));
 
 
     this.vectorCircuito.push(this.parte1);

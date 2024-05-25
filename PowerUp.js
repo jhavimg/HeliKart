@@ -33,7 +33,7 @@ class PowerUp extends THREE.Object3D {
     this.add(this.nodoPosOrientTubo);
 
     this.nodoRaiz.scale.set(0.2 , 0.2 , 0.2);
-    //this.nodoRaiz.position.y = this.radio + 0.75 * 0.25;
+    this.nodoRaiz.position.y = this.radio + 0.75 * 0.25;
     this.nodoRotacion.rotateZ(rot);
    
     this.cajaFigura = new THREE. Box3 ( ) ;
@@ -137,14 +137,14 @@ class PowerUp extends THREE.Object3D {
     var esp_ang = this.velocidad * segundosTranscurridos ;
     this.nodoRaiz.rotateY(esp_ang);
 
-    /* var posTmp = this.path.getPointAt(this.ti);
+    var posTmp = this.path.getPointAt(this.ti);
     this.nodoPosOrientTubo.position.copy (posTmp);
     var tangente = this.path.getTangentAt(this.ti);
     posTmp.add (tangente);
     var segmentoActual = Math.floor(this.ti * this.segmentos);
 
     this.nodoPosOrientTubo.up = this.tubo.binormals[segmentoActual];
-    this.nodoPosOrientTubo.lookAt (posTmp); */
+    this.nodoPosOrientTubo.lookAt (posTmp);
 
     this.cajaFigura.setFromObject ( this.nodoRaiz ) ;
     this.cajaVisible = new THREE.Box3Helper( this.cajaFigura , 0xCF00 ) ;
