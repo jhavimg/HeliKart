@@ -118,16 +118,33 @@ class Zepelin extends THREE.Object3D {
       color: 0x0009FF,
     });
 
-    var globo = new THREE.Mesh(geometry , mat);
+    var textureLoader = new THREE.TextureLoader();
+    var globoTexture = textureLoader.load('./img/zepelin.jpg');
+
+    var globoMaterial = new THREE.MeshStandardMaterial({
+      map: globoTexture,
+      metalness: 0.7,
+      roughness: 0.2
+    });
+
+    var globo = new THREE.Mesh(geometry , globoMaterial);
     globo.position.y = 1.7;
 
     return globo;
   }
 
   createCabina(){
-    var cabina_cuerpo = new THREE.Mesh(new THREE.BoxGeometry(0.7 , 0.3 , 1.5) , new THREE.MeshStandardMaterial({color: 0xCFCFFF,}));
-    var cabina_delantera = new THREE.Mesh(new THREE.CylinderGeometry(0.7 / 2 , 0.7 / 2 , 0.3) , new THREE.MeshNormalMaterial());
-    var cabina_trasera = new THREE.Mesh(new THREE.CylinderGeometry(0.7 / 2 , 0.7 / 2 , 0.3) , new THREE.MeshNormalMaterial());
+
+    var cabinaMaterial = new THREE.MeshStandardMaterial({
+      color: 0xCFCFFF,
+      metalness: 0.3,
+      roughness: 0.7
+    });
+
+    var cabina_cuerpo = new THREE.Mesh(new THREE.BoxGeometry(0.7 , 0.3 , 1.5) ,cabinaMaterial);
+    var cabina_delantera = new THREE.Mesh(new THREE.CylinderGeometry(0.7 / 2 , 0.7 / 2 , 0.3) , cabinaMaterial);
+    var cabina_trasera = new THREE.Mesh(new THREE.CylinderGeometry(0.7 / 2 , 0.7 / 2 , 0.3) , cabinaMaterial);
+
     cabina_cuerpo.position.set(0 , 0 , 0 );
     cabina_delantera.position.set(0 , 0 , 1.5 / 2 );
     cabina_trasera.position.set(0 , 0 , -1.5 / 2 );
@@ -155,11 +172,13 @@ class Zepelin extends THREE.Object3D {
 
     const geometry = new THREE.ExtrudeGeometry( shape, extrudeSettings );
 
-    var mat = new THREE.MeshStandardMaterial({
+    var flapMaterial = new THREE.MeshStandardMaterial({
       color: 0x0009FF,
+      metalness: 0.5,
+      roughness: 0.5
     });
 
-    var flap = new THREE.Mesh(geometry , mat);
+    var flap = new THREE.Mesh(geometry , flapMaterial);
     flap.rotateY(-Math.PI/2);
     return flap;
   }
