@@ -120,14 +120,18 @@ class PowerUp extends THREE.Object3D {
     this.nodoRaiz.add(anilloMesh);
 
     // TEXTURA EN ESFERA
-    var matEsfera = new THREE.MeshStandardMaterial({
-      color: 0xFF00AE,
-      transparent : true,
-      opacity: 0.75,
-      fog: true
-    });
+    const textureLoader = new THREE.TextureLoader();
 
-    var esfera = new THREE.Mesh(new THREE.SphereGeometry(0.2) , matEsfera)
+    const lavabasecolor = textureLoader.load("./img/lava/Lava_005_COLOR.jpg");
+    const lavanormalMap = textureLoader.load("./img/lava/Lava_005_NORM.jpg");
+    const lavaheightMap = textureLoader.load("./img/lava/Lava_005_DISP.png");
+    const lavaroughnessMap = textureLoader.load("./img/lava/Lava_005_ROUGH.jpg");
+    const lavaambientOcclusionMap = textureLoader.load("./img/lava/Lava_005_OCC.jpg");
+    const lavaemissive = textureLoader.load("./img/lava/Lava_005_MASK.jpg");
+
+    var matEsfera = new THREE.MeshStandardMaterial({ color: 0xffff66, map: lavabasecolor, normalMap: lavanormalMap, displacementMap: lavaheightMap, displacementScale: 0.1, roughnessMap: lavaroughnessMap, roughness: 1, aoMap: lavaambientOcclusionMap, emissiveMap: lavaemissive });
+
+    var esfera = new THREE.Mesh(new THREE.SphereGeometry(0.1) , matEsfera)
     this.nodoRaiz.add(esfera);
   }
  
