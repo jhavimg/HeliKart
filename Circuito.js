@@ -26,10 +26,8 @@ class CinquefoilKnot extends THREE.Curve {
 }
 
 class Circuito extends THREE.Object3D {
-    constructor(gui, titleGui) {
+    constructor() {
         super();
-
-        this.createGUI(gui, titleGui);
 
         const curve = new CinquefoilKnot(10);
 
@@ -54,20 +52,8 @@ class Circuito extends THREE.Object3D {
             self.add(tubeMesh);  // Añadir el mesh a la instancia correcta de Circuito
         });
 
-        // this.material = new THREE.MeshLambertMaterial({ color: 0xff00ff });
-        // const tubeMesh = new THREE.Mesh(this.tubeGeometry, this.material);
-
         this.curve = curve;
-        // this.add(tubeMesh);
 
-    }
-
-    createGUI(gui, titleGui) {
-
-    }
-
-    update() {
-        
     }
 }
 

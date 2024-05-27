@@ -23,7 +23,7 @@ class Coche extends THREE.Object3D {
     this.velocidadCoche = 0.025;
     this.tiempoEspera = 0;
     this.tiempoEsperaMaximo = 0.5;
-    this.velocidadGiro = Math.PI * 40;
+    this.velocidadGiro = Math.PI * 0;
     //////////////////////////////////////////////////////
 
     //Variables animación salto///////////////////////////////////////////////////////////////////////////////
@@ -534,7 +534,7 @@ class Coche extends THREE.Object3D {
     }
   }
 
-  hacerDisparo(zepelin) {
+  hacerDisparo() {
     // Define el ángulo final y el tiempo de animación
     var anguloFinal = -Math.PI / 1.1;
     var duracionAnimacion = 1000; // duración de la animación en milisegundos
