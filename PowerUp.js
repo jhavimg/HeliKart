@@ -13,10 +13,7 @@ class PowerUp extends THREE.Object3D {
     this.ti = t;
    
     this.nodoRaiz = new THREE.Object3D();
-    // this.nodoRaiz.add(this.createPowerUp());
     this.createPowerUp();
-
-    //this.add(this.nodoRaiz);
 
     this.tubo = tubeGeo;
     this.path = tubeGeo.parameters.path;
@@ -43,29 +40,6 @@ class PowerUp extends THREE.Object3D {
   }
 
   createPowerUp(){
-    // var geometry = new THREE.CylinderGeometry(0.01 , 0.5 , 0.75 , 4);
-    // var mat = new THREE.MeshNormalMaterial();
-
-    // var boost = new CSG();
-
-    // var rombo_up = new THREE.Mesh(geometry , mat);
-    // var rombo_down = new THREE.Mesh(geometry , mat);
-    // var anillo = new THREE.Mesh (new THREE.TorusGeometry(0.42 , 0.08 , 16 , 50) , mat );
-    // var esfera_resta = new THREE.Mesh(new THREE.CylinderGeometry(0.25 , 0.25 , 1.5));
-    // var esfera = new THREE.Mesh(new THREE.SphereGeometry(0.2) , mat)
-    // esfera_resta.rotateX(-Math.PI/2 );
-    // rombo_up.position.set(0 , 0.75/2 , 0);
-    // rombo_down.position.set(0 , -0.75/2, 0);
-    // rombo_down.rotateX(-Math.PI );
-    // anillo.rotateX(-Math.PI/2 );
-
-    // boost.union([rombo_up , rombo_down]);
-    // boost.union([anillo]);
-    // boost.subtract([esfera_resta]);
-    // boost.union([esfera]);  
-
-    // return boost.toMesh();
-
     var geometry = new THREE.CylinderGeometry(0.01, 0.5, 0.75, 4);
 
     // Textura piramides

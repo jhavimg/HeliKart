@@ -326,19 +326,6 @@ class MyScene extends THREE.Scene {
 
   }
 
-  createGround() {
-    var geometryGround = new THREE.BoxGeometry(10, 0.2, 10);
-
-    var texture = new THREE.TextureLoader().load('../imgs/wood.jpg');
-    var materialGround = new THREE.MeshStandardMaterial({ map: texture });
-
-    var ground = new THREE.Mesh(geometryGround, materialGround);
-
-    ground.position.y = -0.1;
-
-    this.add(ground);
-  }
-
   createGUI() {
     var gui = new GUI();
 
@@ -449,11 +436,6 @@ class MyScene extends THREE.Scene {
 
     TWEEN.update();
 
-    //this.coche.update();
-
-    /* for (var i = 0; i < this.parte1.length; i++) {
-      this.parte1[i].update();
-    } */
     for (var i = 0; i < this.vectorCircuito.length; i++) {
       var vector = this.vectorCircuito[i];
       for (var j = 0; j < vector.length; j++) {
@@ -525,6 +507,7 @@ class MyScene extends THREE.Scene {
 
     if(this.girar){
       this.coche.giro(this.direccionGiro);
+      console.log(this.direccionGiro);
     }
 
     if (this.coche.getTi() < posicionCoche) {

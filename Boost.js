@@ -106,7 +106,6 @@ class Boost extends THREE.Object3D {
     rueGeo.translate(0, -0.1, 0);
     var rueMesh = new THREE.Mesh(rueGeo, material);
 
-    //csg.union([rueMesh, cil3Mesh, valvulaMesh, cil2Mesh]);
     var csg2 = new CSG();
     csg2.union([rueMesh, cil3Mesh, valvulaMesh, cil2Mesh]);
     
