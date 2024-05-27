@@ -14,6 +14,7 @@ class Coche extends THREE.Object3D {
     this.velocidadElice = 3 * Math.PI;
     this.relojMovimientoCoche = new THREE.Clock();
     this.t = 0;
+    //this.relojGiro = new THREE.Clock();
 
     //velocidad de movimiento de las animaciones///////////
     this.velocidadSalto = 1.5;
@@ -24,6 +25,14 @@ class Coche extends THREE.Object3D {
     this.tiempoEsperaMaximo = 0.5;
     this.velocidadGiro = Math.PI * 40;
     //////////////////////////////////////////////////////
+
+    //Variables animación salto///////////////////////////////////////////////////////////////////////////////
+    this.tituloGui = titleGui
+    this.variacion = 0.07; //como va a aumentar la x a mas chica mas lento sube
+    this.alturaMax = 3;  //la altura maxima a la que llega el coche
+    this.xIni = -3.8729833462074; //esto depende de la funcion que se elija => -0.2x² + alturaMaxima
+    this.x = this.xIni; //es la x de donde va a salir la Y
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
     var chasis = this.createChasis();
 
@@ -40,6 +49,7 @@ class Coche extends THREE.Object3D {
 
     //Calandra y varible para su movimiento/////////
     this.angleC = 0;
+    //this.variacion_angleCIni = -0.08;
     this.calandra = this.createCalandra();
     this.calandra.scale.set(1, 0.65, 0.65);
     this.calandra.rotateZ(this.angleC);
@@ -57,6 +67,7 @@ class Coche extends THREE.Object3D {
     this.nodoRaizCoche.rotateY(Math.PI / 2);
 
     this.nodoRaizCoche.scale.set(0.25, 0.25, 0.25); //Escalado del coche para ponerlo en el circuito
+    //this.coche = new THREE.Object3D();
 
     this.add(this.nodoRaizCoche);
 
@@ -76,12 +87,32 @@ class Coche extends THREE.Object3D {
     this.nodoRaizCoche.position.y = this.radio + 0.15;
     this.add(this.nodoPosOrientTubo);
 
+    /*     // Balas
+        this.balas = [];
+        this.nodoRaizCoche.add(this.balas); */
+
     // Hitbox
     this.cajaFigura = new THREE.Box3();
     this.cajaFigura.setFromObject(this.nodoRaizCoche);
     this.cajaVisible = new THREE.Box3Helper(this.cajaFigura, 0xCF00);
     this.add(this.cajaVisible);
   }
+
+  /*   shoot(zepelin){
+      // Disparo al zepelin
+      const materialBala = new THREE.MeshStandardMaterial({ color: 0xff0000 });
+      var geometriaBala = new THREE.SphereGeometry(0.1);
+      const bala = new THREE.Mesh(geometriaBala, materialBala);
+      bala.position.copy(this.nodoRaizCoche.position);
+  
+      var velocidadBala = 1;
+      var direccion = new THREE.Vector3();
+      direccion.subVectors(zepelin.userData.position, bala.position).normalize();
+      bala.velocity = direccion.multiplyScalar(velocidadBala);
+  
+      this.balas.push(bala);
+      this.add(bala);
+    } */
 
   setCamaraSubjetiva(camara) {
     this.camara = camara;
@@ -332,6 +363,7 @@ class Coche extends THREE.Object3D {
   createCalandra() {
     var shape = new THREE.Shape();
     shape.moveTo(-0.4, 0.4);
+    //shape.lineTo(-0.4 , 0.4);
     shape.lineTo(0.4, 0.4);
     shape.lineTo(0.5, -0.4);
     shape.lineTo(-0.5, -0.4);
@@ -435,7 +467,7 @@ class Coche extends THREE.Object3D {
   doSalto(salto) {
     this.relojSalto = new THREE.Clock();
     this.hacerSalto = salto;
-
+    //this.salto();
     this.relojBrazo = new THREE.Clock();
     this.subir = salto;
   }
@@ -502,7 +534,7 @@ class Coche extends THREE.Object3D {
     }
   }
 
-  hacerDisparo() {
+  hacerDisparo(zepelin) {
     // Define el ángulo final y el tiempo de animación
     var anguloFinal = -Math.PI / 1.1;
     var duracionAnimacion = 1000; // duración de la animación en milisegundos
@@ -512,6 +544,7 @@ class Coche extends THREE.Object3D {
       .to({ z: anguloFinal }, duracionAnimacion)
       .easing(TWEEN.Easing.Cubic.Out)
       .onComplete(() => {
+        // this.shoot(zepelin);  // Dispara cuando la animación se completa
       });
 
     // Animación de cierre de la calandra
@@ -527,6 +560,8 @@ class Coche extends THREE.Object3D {
   }
 
   hacerGiro(direccion) {
+    //this.relojGiro = new THREE.Clock();
+    //this.relojMovimientoCoche.getDelta();
     this.girol = true;
     this.giro(direccion);
   }
@@ -570,6 +605,7 @@ class Coche extends THREE.Object3D {
     // Animación para movimiento por el tubo
     this.t += this.relojMovimientoCoche.getDelta() * this.velocidadCoche;
     this.ti = this.t % 1;
+    //this.ti = 0;
     var posTmp = this.path.getPointAt(this.ti);
     this.nodoPosOrientTubo.position.copy(posTmp);
     var tangente = this.path.getTangentAt(this.ti);
@@ -582,6 +618,21 @@ class Coche extends THREE.Object3D {
     // Hitbox
     this.cajaFigura.setFromObject(this.nodoRaizCoche);
     this.cajaVisible = new THREE.Box3Helper(this.cajaFigura, 0xCF00);
+  }
+
+  updatePresentacion(){
+    if (this.hacerSalto) {
+      this.salto();
+    }
+
+    if (this.subir) {
+      this.volar();
+    }
+
+     // Movimiento hélices
+     var segundosTranscurridos = this.relojElice.getDelta();
+     var esp_ang = this.velocidadElice * segundosTranscurridos;
+     this.elice.rotateX(esp_ang);
   }
 
   getCaja() {
