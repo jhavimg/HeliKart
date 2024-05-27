@@ -9,14 +9,11 @@ function generarPuntosCirculo(radio, numPuntos) {
 
   // Generar los puntos del círculo
   for (var i = 0; i < numPuntos; i++) {
-      // Calcular el ángulo para este punto
       var angulo = i * anguloIncremento;
 
-      // Calcular las coordenadas x e y para este punto
       var x = radio * Math.cos(angulo);
       var y = radio * Math.sin(angulo);
 
-      // Crear un nuevo Vector2 con las coordenadas x e y y agregarlo a la lista de puntos
       puntos.push(new THREE.Vector2(x, y));
   }
 
