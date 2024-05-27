@@ -91,7 +91,7 @@ class MyScene extends THREE.Scene {
 
   añadirTronco(){
     this.tronco = new Tronco(this.circuito.tubeGeometry, 0, 0);
-    this.tronco.position.y = 0;
+    this.tronco.position.y = -4;
     this.borrarObjetos();
     this.add(this.tronco);
     console.log("Tronco");
