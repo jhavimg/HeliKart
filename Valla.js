@@ -7,14 +7,11 @@ class Valla extends THREE.Object3D {
   constructor(tubeGeo, t , rot) {
     super();
     this.ti = t;
-    //this.add(valla);
 
     this.puntos = -3;
 
     this.nodoRaiz = new THREE.Object3D();
     this.nodoRaiz.add(this.createValla());
-
-    //this.add(this.nodoRaiz);
 
     this.tubo = tubeGeo;
     this.path = tubeGeo.parameters.path; 

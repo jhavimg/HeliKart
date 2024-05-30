@@ -16,7 +16,6 @@ import { Zepelin } from './Zepelin.js'
 import { Valla } from './Valla.js'
 import { Circuito } from './Circuito.js'
 import { Tronco } from './Tronco.js'
-import { Coche2 } from './Coche2.js'
 
 class MyScene extends THREE.Scene {
   constructor(myCanvas) {
@@ -507,7 +506,6 @@ class MyScene extends THREE.Scene {
 
     if(this.girar){
       this.coche.giro(this.direccionGiro);
-      console.log(this.direccionGiro);
     }
 
     if (this.coche.getTi() < posicionCoche) {
@@ -549,8 +547,6 @@ $(function () {
   window.addEventListener("keydown", (event) => {
     if (event.key === " ") {
       scene.toggleCamera();
-    } else if (event.key === 'w' || event.key === 'W') {
-      scene.coche.doSalto(true);
     } else if (event.key === 'a' || event.key === 'A') {
       scene.girar = true;
       scene.direccionGiro = "izquierda";
@@ -558,6 +554,12 @@ $(function () {
     else if (event.key === 'd' || event.key === 'D') {
       scene.girar = true;
       scene.direccionGiro = "derecha";
+    }
+  });
+
+  window.addEventListener("keypress", (event) => {
+    if (event.key === 'w' || event.key === 'W') {
+      scene.coche.doSalto(true);
     }
   });
 
