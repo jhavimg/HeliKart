@@ -95,7 +95,6 @@ class Zepelin extends THREE.Object3D {
     var puntos = generarPuntosCirculo(0.2 , 64);
     shape.moveTo(puntos[0].x, puntos[0].y);
 
-    // Crear líneas hacia los puntos restantes
     for (var i = 1; i < puntos.length; i++) {
         shape.lineTo(puntos[i].x, puntos[i].y);
     }
@@ -103,10 +102,10 @@ class Zepelin extends THREE.Object3D {
     const extrudeSettings = { 
       depth: 0, 
       bevelEnabled: true, 
-      bevelThickness: 5,//largo de lo abombao
-      bevelSize: 1.5, //cuanto se va a abombar
-      bevelSegments: 60, //esto crea mas segmentos por lo q se ve mas redondeado
-      curveSegments: 60 //segmentos para la curva del shape
+      bevelThickness: 5,
+      bevelSize: 1.5,
+      bevelSegments: 60, 
+      curveSegments: 60 
     };
     
     const geometry = new THREE.ExtrudeGeometry( shape, extrudeSettings );
@@ -161,10 +160,10 @@ class Zepelin extends THREE.Object3D {
     const extrudeSettings = { 
       depth: 0, 
       bevelEnabled: true, 
-      bevelThickness: 0.05,//largo de lo abombao
-      bevelSize: 0.1, //cuanto se va a abombar
-      bevelSegments: 60, //esto crea mas segmentos por lo q se ve mas redondeado
-      curveSegments: 60 //segmentos para la curva del shape
+      bevelThickness: 0.05,
+      bevelSize: 0.1, 
+      bevelSegments: 60, 
+      curveSegments: 60 
     };
 
     const geometry = new THREE.ExtrudeGeometry( shape, extrudeSettings );
@@ -186,7 +185,6 @@ class Zepelin extends THREE.Object3D {
   
   update () {
 
-    // Posicionar en circuito
     var posTmp = this.path.getPointAt(this.ti);
     this.nodoPosOrientTubo.position.copy (posTmp);
     var tangente = this.path.getTangentAt(this.ti);

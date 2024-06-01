@@ -33,8 +33,6 @@ class Tronco extends THREE.Object3D {
     
     this.cajaFigura = new THREE. Box3 ( ) ;
     this.cajaFigura.setFromObject ( this.nodoRaiz ) ;
-    this.cajaVisible = new THREE.Box3Helper( this.cajaFigura , 0xCF00 ) ;
-    this.add ( this.cajaVisible ) ;
   }
 
   createTronco(){
@@ -108,7 +106,6 @@ class Tronco extends THREE.Object3D {
     this.nodoPosOrientTubo.lookAt (posTmp);
 
     this.cajaFigura.setFromObject ( this.nodoRaiz ) ;
-    this.cajaVisible = new THREE.Box3Helper( this.cajaFigura , 0xCF00 ) ;
   }
 
   getCaja(){

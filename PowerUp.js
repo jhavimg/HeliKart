@@ -29,14 +29,12 @@ class PowerUp extends THREE.Object3D {
     this.nodoPosOrientTubo.add(this.nodoRotacion);
     this.add(this.nodoPosOrientTubo);
 
-    this.nodoRaiz.scale.set(0.2 , 0.2 , 0.2);
+    this.nodoRaiz.scale.set(0.3 , 0.3 , 0.3);
     this.nodoRaiz.position.y = this.radio + 0.75 * 0.25;
     this.nodoRotacion.rotateZ(rot);
    
     this.cajaFigura = new THREE. Box3 ( ) ;
     this.cajaFigura.setFromObject ( this.nodoRaiz ) ;
-    this.cajaVisible = new THREE.Box3Helper( this.cajaFigura , 0xCF00 ) ;
-    this.add ( this.cajaVisible ) ;
   }
 
   createPowerUp(){
@@ -125,7 +123,6 @@ class PowerUp extends THREE.Object3D {
     this.nodoPosOrientTubo.lookAt (posTmp);
 
     this.cajaFigura.setFromObject ( this.nodoRaiz ) ;
-    this.cajaVisible = new THREE.Box3Helper( this.cajaFigura , 0xCF00 ) ;
   }
  
   getCaja(){

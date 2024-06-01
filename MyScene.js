@@ -35,15 +35,15 @@ class MyScene extends THREE.Scene {
     this.currentCamera = 'normal';
 
     //Se crea el circuito
-    this.circuito = new Circuito(this.gui, "Controles circuito");
+    this.circuito = new Circuito();
     this.add(this.circuito);
 
     //Se crea el personaje
-    this.coche = new Coche(this.circuito.tubeGeometry, this.gui, "coche");
+    this.coche = new Coche(this.circuito.tubeGeometry, this.gui, "Controles coche");
     this.add(this.coche);
     this.createLuz1(this.coche);
-    this.createLuz2(this.coche);
-    this.createLuz3(this.coche);
+    this.createLuzMala(this.coche);
+    this.createLuzBuena(this.coche);
 
     // Camara subjetiva
     this.createCameraSubjetiva(this.coche);
@@ -87,14 +87,14 @@ class MyScene extends THREE.Scene {
     coche.setLight(this.pointLight1);
   }
 
-  createLuz2(coche){
+  createLuzMala(coche){
     this.pointLight2 = new THREE.PointLight( 0xff0000 );
     this.pointLight2.power = 0;
     this.pointLight2.position.set( 0, 5, 0 );
     coche.setLight(this.pointLight2);
   }
 
-  createLuz3(coche){
+  createLuzBuena(coche){
     this.pointLight3 = new THREE.PointLight( 0x00ff00 );
     this.pointLight3.power = 0;
     this.pointLight3.position.set( 0, 5, 0 );
@@ -103,58 +103,58 @@ class MyScene extends THREE.Scene {
 
   lucesMalas() {
     var tiempo1 = 400;
-    var tiempo2 = 600; // Ajuste para que comience después del primero
-    var tiempo3 = 1000; // Ajuste para que comience después del segundo
-    var self = this; // Guardamos una referencia al contexto exterior
+    var tiempo2 = 600; 
+    var tiempo3 = 1000; 
+    var self = this; 
 
     this.pointLight1.power = 0;
     this.pointLight2.power = 1000;
     this.pointLight3.power = 0;
 
     setTimeout(function () {
-      // Usamos self en lugar de this
       self.pointLight1.power = 500;
       self.pointLight2.power = 0;
-    }.bind(this), tiempo1); // Usamos bind para mantener el contexto exterior
+      self.pointLight3.power = 0;
+    }.bind(this), tiempo1); 
 
     setTimeout(function () {
-      // Usamos self en lugar de this
       self.pointLight1.power = 0;
       self.pointLight2.power = 1000;
+      self.pointLight3.power = 0;
     }.bind(this), tiempo2);
 
     setTimeout(function () {
-      // Usamos self en lugar de this
       self.pointLight1.power = 500;
       self.pointLight2.power = 0;
+      self.pointLight3.power = 0;
     }.bind(this), tiempo3);
   }
   
   lucesBuenas() {
     var tiempo1 = 400;
-    var tiempo2 = 600; // Ajuste para que comience después del primero
+    var tiempo2 = 600; 
     var tiempo3 = 1000;
-    var self = this; // Guardamos una referencia al contexto exterior
+    var self = this; 
   
     this.pointLight1.power = 0;
     this.pointLight2.power = 0;
     this.pointLight3.power = 1000;
   
     setTimeout(function() {
-      // Usamos self en lugar de this
       self.pointLight1.power = 500;
+      self.pointLight2.power = 0;
       self.pointLight3.power = 0;
-    }.bind(this), tiempo1); // Usamos bind para mantener el contexto exterior
+    }.bind(this), tiempo1); 
 
     setTimeout(function() {
-      // Usamos self en lugar de this
       self.pointLight1.power = 0;
+      self.pointLight2.power = 0;
       self.pointLight3.power = 1000;
     }.bind(this), tiempo2);
 
     setTimeout(function() {
-      // Usamos self en lugar de this
       self.pointLight1.power = 500;
+      self.pointLight2.power = 0;
       self.pointLight3.power = 0;
     }.bind(this), tiempo3);
   }
@@ -413,10 +413,9 @@ class MyScene extends THREE.Scene {
     // Encuentra y elimina el zepelín de la lista de objetos seleccionables
     const index = this.pickableObjets.indexOf(zepelin);
     if (index !== -1) {
-      this.pickableObjets.splice(index, 1); // Elimina el zepelín de la lista
+      this.pickableObjets.splice(index, 1);
     }
 
-    // Elimina el zepelín de la escena
     this.remove(zepelin);
   }
 
@@ -584,7 +583,6 @@ $(function () {
     if (pickedObjects.length > 0) {
       var obj = pickedObjects[0].object;
       if (obj.userData instanceof Zepelin) {
-        console.log("Pick en zepelin");
         scene.lucesBuenas();
         scene.updatePuntos(obj.userData.getPuntos());
         scene.removeZepelin(obj.userData);
